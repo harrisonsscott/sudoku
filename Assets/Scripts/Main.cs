@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.AdaptivePerformance;
 using UnityEngine.UI;
 
+// puzzle data is generated with python
 [System.Serializable]
 public class PuzzleData {
     public string[] puzzles;
