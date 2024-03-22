@@ -10,9 +10,15 @@ public class UI : MonoBehaviour
     public GameObject newGameButton;
     public GameObject homeScene;
     public GameObject newGameScene;
+    public GameObject gameScene;
     [Header("Other")]
     const float transitionTime = 0.1f;
     private void Start() {
+        // show the home scene during the start of the game
+        homeScene.SetActive(true);
+        foreach (var element in new GameObject[]{newGameScene, gameScene}){
+           element.SetActive(false);
+        }
         // adding listeners to buttons
         newGameButton.GetComponent<Button>().onClick.AddListener(() => TransitionScene(homeScene, newGameScene));
     }

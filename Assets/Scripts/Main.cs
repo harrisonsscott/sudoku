@@ -5,27 +5,6 @@ using UnityEngine;
 using UnityEngine.AdaptivePerformance;
 using UnityEngine.UI;
 
-// puzzle data is generated with python
-[System.Serializable]
-public class PuzzleData {
-    public string[] puzzles;
-}
-
-[System.Serializable]
-public class SudokuGrid {
-    public int[,] data = new int[GlobalConstants.gridX, GlobalConstants.gridY];
-    public void Log(){
-        string row = "";
-        for (int y = 0; y < GlobalConstants.gridY; y++){
-            for (int x = 0; x < GlobalConstants.gridX; x++){
-                row += data[x, y] + ", ";
-            }
-            row += "\n";
-        }
-        Debug.Log(row);
-    }
-}
-
 public class Main : MonoBehaviour
 {
     public TextAsset jsonFile;
@@ -33,13 +12,11 @@ public class Main : MonoBehaviour
     private void Start() {
         string path = Application.dataPath + "/data.json";
 
-        if (!File.Exists(path)){
+        // if (!File.Exists(path)){
             File.WriteAllText(path, jsonFile.text);
-        }
+        // }
 
         string sudokuString = Data.GetSudokuString(path);
-        Debug.Log(sudokuString);
-        Debug.Log(sudokuString[2]);
         SudokuGrid grid = Data.DecodeSudokuString(sudokuString);
         grid.Log();
     }
