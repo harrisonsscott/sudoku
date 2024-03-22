@@ -8,16 +8,18 @@ using UnityEngine.UI;
 public class Main : MonoBehaviour
 {
     public TextAsset jsonFile;
+    public SudokuGrid grid;
 
     private void Start() {
         string path = Application.dataPath + "/data.json";
 
-        // if (!File.Exists(path)){
+        if (!File.Exists(path)){
             File.WriteAllText(path, jsonFile.text);
-        // }
+        }
 
-        string sudokuString = Data.GetSudokuString(path);
-        SudokuGrid grid = Data.DecodeSudokuString(sudokuString);
+        grid = Data.GetSudokuGrid(path);
+        grid.Log();
+        Debug.Log(grid.Place(0, 0, 2));
         grid.Log();
     }
 }

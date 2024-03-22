@@ -11,6 +11,7 @@ public class UI : MonoBehaviour
     public GameObject homeScene;
     public GameObject newGameScene;
     public GameObject gameScene;
+    public GameObject sudokuGrid;
     [Header("Other")]
     const float transitionTime = 0.1f;
     private void Start() {
