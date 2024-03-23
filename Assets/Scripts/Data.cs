@@ -96,14 +96,14 @@ public class SudokuGrid : MonoBehaviour {
 }
 
 public static class Data {
-    public static SudokuGrid GetSudokuGrid(string path){ // gets a random encoded sudoku puzzle from the JSON 
-        string json = File.ReadAllText(path);
+    public static SudokuGrid GetSudokuGrid(TextAsset jsonFile){ // gets a random encoded sudoku puzzle from the JSON 
+        string json = jsonFile.text;
         PuzzleData data = JsonUtility.FromJson<PuzzleData>(json);
         int index = UnityEngine.Random.Range(0, data.puzzles.Length-1);
 
         SudokuGrid grid = new SudokuGrid();
-        grid.partial = data.puzzles[0].partial;
-        grid.full = data.puzzles[0].full;
+        grid.partial = data.puzzles[index].partial;
+        grid.full = data.puzzles[index].full;
 
         grid.data = DecodeSudokuString(grid.partial);
 
