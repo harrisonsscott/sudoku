@@ -9,8 +9,10 @@ public class Main : MonoBehaviour
 {
     public TextAsset jsonFile;
     public SudokuGrid grid;
+    private float index;
 
     private void Start() {
+        index = 0;
         string path = Application.dataPath + "/data.json";
 
         if (!File.Exists(path)){
@@ -18,8 +20,6 @@ public class Main : MonoBehaviour
         }
 
         grid = Data.GetSudokuGrid(path);
-        grid.Log();
-        Debug.Log(grid.Place(0, 0, 2));
         grid.Log();
     }
 }

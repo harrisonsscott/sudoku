@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,7 @@ public class UI : MonoBehaviour
     public GameObject gameScene;
     public GameObject sudokuGrid;
     [Header("Other")]
+    public Sudoku sudoku;
     const float transitionTime = 0.1f;
     private void Start() {
         // show the home scene during the start of the game
@@ -22,6 +24,10 @@ public class UI : MonoBehaviour
         }
         // adding listeners to buttons
         newGameButton.GetComponent<Button>().onClick.AddListener(() => TransitionScene(homeScene, newGameScene));
+    }
+    public void changeNumber(int num){ // called by the buttons that let you change the number to place
+        sudoku.number = num;
+        Debug.Log(num);
     }
     public void TransitionScene(GameObject from, GameObject to){ // moves one scene off the screen and moves another to it
         RectTransform fromRect = from.GetComponent<RectTransform>();

@@ -48,11 +48,11 @@ public class SudokuGrid : MonoBehaviour {
     public int Place(int x, int y, int num){ 
         if (data[x, y] != 0)
             return 1;
-        
-        int fullReference = full[y * GlobalConstants.gridX + x];
+        int fullReference = full[y*GlobalConstants.gridY+x] - '0';
         Debug.Log(fullReference);
+        Debug.Log(data[x,y]);
 
-        if (data[x, y] == fullReference){
+        if (num == fullReference){
             data[x, y] = num;
             return 0;
         } else {
@@ -73,20 +73,22 @@ public class SudokuGrid : MonoBehaviour {
         RectTransform rect = image.GetComponent<RectTransform>();
 
         Vector2 gridSize = new Vector2(rect.sizeDelta.x/GlobalConstants.gridX, rect.sizeDelta.y/GlobalConstants.gridY);
-        Debug.Log(gridSize);
 
-        for (int y = 0;  y < GlobalConstants.gridY; y++){
-            for (int x = 0; x < GlobalConstants.gridX; x++){
-                if (data[x,y] != 0){
-                    GameObject textGO = Instantiate(textReference);
-                    TMP_Text text = textGO.GetComponent<TMP_Text>();
+        for (int x = 0; x < GlobalConstants.gridX; x++){
+            for (int y = 0;  y < GlobalConstants.gridY; y++){
+                GameObject textGO = Instantiate(textReference);
+                TMP_Text text = textGO.GetComponent<TMP_Text>();
 
-                    textGO.transform.parent = image.transform;
+                textGO.transform.SetParent(image.transform);
 
-                    textGO.GetComponent<RectTransform>().sizeDelta = gridSize;
-                    textGO.GetComponent<RectTransform>().localPosition = new Vector2(gridSize.x*x, gridSize.y*y) - new Vector2(rect.sizeDelta.x/2, rect.sizeDelta.y/2) + gridSize/2;
-                    text.text = data[x,y] + "";
-                }
+                textGO.GetComponent<RectTransform>().sizeDelta = gridSize;
+                textGO.GetComponent<RectTransform>().localPosition = new Vector2(gridSize.x*x, -gridSize.y*y) - new Vector2(rect.sizeDelta.x/2, -rect.sizeDelta.y/2) + new Vector2(gridSize.x, -gridSize.y)/2;
+                // textGO.GetComponent<RectTransform>().localPosition = -(new Vector2(gridSize.x*x, -gridSize.y*y) - new Vector2(rect.sizeDelta.x/2, rect.sizeDelta.y/2) + gridSize/2);
+                text.text = data[x,y] + "";
+                if (data[x,y] == 0)
+                    textGO.SetActive(false);
+                else 
+                    textGO.SetActive(true);
             }
         }
         
@@ -100,8 +102,8 @@ public static class Data {
         int index = UnityEngine.Random.Range(0, data.puzzles.Length-1);
 
         SudokuGrid grid = new SudokuGrid();
-        grid.partial = data.puzzles[index].partial;
-        grid.full = data.puzzles[index].full;
+        grid.partial = data.puzzles[0].partial;
+        grid.full = data.puzzles[0].full;
 
         grid.data = DecodeSudokuString(grid.partial);
 
