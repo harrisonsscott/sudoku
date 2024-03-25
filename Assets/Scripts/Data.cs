@@ -26,6 +26,12 @@ public class SudokuGrid : MonoBehaviour {
     public string partial; // encoded partially completed sudoku grid for reference
     public string full; // encoded completed sudoku grid for reference
     public int[,] data = new int[GlobalConstants.gridX, GlobalConstants.gridY];
+    public int mistakesLeft = 3;
+    public int score;
+    public int combo; // amount of times the user has correctly placed a number in a row, gives more score
+
+    private Action onScoreChange; // action that is called when the score is changed
+    private Action onMistake; // action thats called when the player misplaces a number
 
     public void Log(){
         string row = "";
@@ -38,6 +44,26 @@ public class SudokuGrid : MonoBehaviour {
         Debug.Log(row);
     }
 
+    public void OnScoreChange(Action action){
+        onScoreChange = action;
+    }
+
+    public void OnMistake(Action action){
+        onMistake = action;
+    }
+
+    private void UpdateScore(bool correct){ // gives score if correct, deducts score if not
+        if (correct){
+            score += (int)(15 * (1 + combo * 0.5f));
+            combo += 1;
+        } else {
+            combo = 0;
+            score = Mathf.Max(0, score - 10);
+        }
+        if (onScoreChange != null)
+            onScoreChange();
+    }
+
     /*Places a number on the grid
 
     Return Types
@@ -46,16 +72,19 @@ public class SudokuGrid : MonoBehaviour {
     2 - Incorrect
     */
     public int Place(int x, int y, int num){ 
-        if (data[x, y] != 0)
+        if (data[x, y] != 0){
             return 1;
+        }
         int fullReference = full[y*GlobalConstants.gridY+x] - '0';
-        Debug.Log(fullReference);
-        Debug.Log(data[x,y]);
 
         if (num == fullReference){
             data[x, y] = num;
+            UpdateScore(true);
             return 0;
         } else {
+            mistakesLeft -= 1;
+            onMistake();
+            UpdateScore(false);
             return 2;
         }
     }
