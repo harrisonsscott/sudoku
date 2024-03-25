@@ -208,7 +208,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1818948514}
         m_TargetAssemblyTypeName: UI, Assembly-CSharp
-        m_MethodName: changeNumber
+        m_MethodName: ChangeNumber
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2068,7 +2068,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1818948514}
         m_TargetAssemblyTypeName: UI, Assembly-CSharp
-        m_MethodName: changeNumber
+        m_MethodName: ChangeNumber
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2201,7 +2201,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1818948514}
         m_TargetAssemblyTypeName: UI, Assembly-CSharp
-        m_MethodName: changeNumber
+        m_MethodName: ChangeNumber
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3069,7 +3069,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1818948514}
         m_TargetAssemblyTypeName: UI, Assembly-CSharp
-        m_MethodName: changeNumber
+        m_MethodName: ChangeNumber
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3202,7 +3202,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1818948514}
         m_TargetAssemblyTypeName: UI, Assembly-CSharp
-        m_MethodName: changeNumber
+        m_MethodName: ChangeNumber
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3932,7 +3932,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1818948514}
         m_TargetAssemblyTypeName: UI, Assembly-CSharp
-        m_MethodName: changeNumber
+        m_MethodName: ChangeNumber
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4501,7 +4501,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1818948514}
         m_TargetAssemblyTypeName: UI, Assembly-CSharp
-        m_MethodName: changeNumber
+        m_MethodName: ChangeNumber
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4634,7 +4634,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1818948514}
         m_TargetAssemblyTypeName: UI, Assembly-CSharp
-        m_MethodName: changeNumber
+        m_MethodName: ChangeNumber
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6744,7 +6744,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1818948514}
         m_TargetAssemblyTypeName: UI, Assembly-CSharp
-        m_MethodName: changeNumber
+        m_MethodName: ChangeNumber
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
