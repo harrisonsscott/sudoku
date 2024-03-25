@@ -9,12 +9,14 @@ using UnityEngine.UI;
 public class UI : MonoBehaviour
 {
     [Header("UI")]
+    public GameObject fadeGameObject;
     public GameObject newGameButton;
     public GameObject homeScene;
     public GameObject newGameScene;
     public GameObject gameScene;
     public GameObject sudokuGrid;
     public GameObject heartContainer; // container with 3 hearts above the sudoku board
+    public GameObject endGameContainer; // container that displays when the game ends
     public TMP_Text timer; // text that displays the time in the game
     public TMP_Text score; // text that displays score
     public List<GameObject> difficultyButtons; // the easy, medium, etc buttons when you're making a new game
@@ -29,7 +31,7 @@ public class UI : MonoBehaviour
     private void Start() {
         // show the home scene during the start of the game
         homeScene.SetActive(true);
-        foreach (var element in new GameObject[]{newGameScene, gameScene}){
+        foreach (var element in new GameObject[]{newGameScene, gameScene, endGameContainer, fadeGameObject}){
            element.SetActive(false);
         }
 
@@ -73,11 +75,26 @@ public class UI : MonoBehaviour
     }
 
     public void EndGame(){
-        OnMistake(true); // refresh the hearts
-        TransitionScene(gameScene, newGameScene);
+        Fade(0.5f, () => {
+            endGameContainer.SetActive(true);
+            // hide the end game container
+            endGameContainer.GetComponent<RectTransform>().sizeDelta = new Vector2(600, 0);
+            for (int i = 0; i < endGameContainer.transform.childCount; i++){   
+                    endGameContainer.transform.GetChild(i).gameObject.SetActive(false);
+            }
+            // reshow it
+            LeanTween.size(endGameContainer.GetComponent<RectTransform>(), new Vector2(600, 550), 0.2f).setOnComplete(() => {
+                // re-enable children
+                for (int i = 0; i < endGameContainer.transform.childCount; i++){   
+                    endGameContainer.transform.GetChild(i).gameObject.SetActive(true);
+                }
+            });
+        });
+        // TransitionScene(gameScene, newGameScene);
     }
 
     public void StartGame(){
+        OnMistake(true); // refresh the hearts
         main.grid = Data.GetSudokuGrid(main.jsonFile);
         main.grid.Draw(sudoku.gameObject, sudoku.textReference);
         main.grid.OnScoreChange(OnScoreChange);
@@ -85,6 +102,22 @@ public class UI : MonoBehaviour
         ChangeNumber(1, numberButtons[0]);
         timeSinceStart = 0;
         isInGame = true;
+    }
+
+    public void ContinueGame(){ // when the player runs out of lives and decides to continue
+        EndFade();
+
+        // disable children
+        for (int i = 0; i < endGameContainer.transform.childCount; i++){   
+            endGameContainer.transform.GetChild(i).gameObject.SetActive(false);
+        }
+        
+        // scale height to 0
+        LeanTween.size(endGameContainer.GetComponent<RectTransform>(), new Vector2(600, 0), 0.2f).setOnComplete(() => {
+            endGameContainer.SetActive(false);
+            main.grid.mistakesLeft = 3;
+            OnMistake(true);
+        });
     }
 
     public void ChangeNumber(int num){ // called by the buttons that let you change the number to place
@@ -107,6 +140,34 @@ public class UI : MonoBehaviour
                 element.GetComponent<Image>().color = numberButtonsStartingColor;
             }
         }
+    }
+
+    public void Fade(float percentage, Action onEnd){ // darkens the screen by a certain amount ranging from 0 to 1
+        Image image = fadeGameObject.GetComponent<Image>();
+        Color color = image.color; // original color
+
+        fadeGameObject.SetActive(true);
+        image.color = new Color(color.r, color.g, color.b, 0);
+        LeanTween.value(0, percentage, 0.5f).setOnUpdate((float value) => {
+            fadeGameObject.GetComponent<Image>().color = new Color(color.r, color.g, color.b, value);
+        }).setOnComplete(onEnd);
+
+    }
+
+    public void Fade(float perecentage){
+        Fade(perecentage, () => {});
+    }
+
+    public void EndFade(Action onEnd){
+        Image image = fadeGameObject.GetComponent<Image>();
+        LeanTween.value(0, image.color.a, 0.5f).setOnComplete(() => {
+            fadeGameObject.SetActive(false);
+            onEnd();
+        });
+    }
+
+    public void EndFade(){
+        EndFade(() => {});
     }
 
     public string FormatTime(int timeInSeconds){
