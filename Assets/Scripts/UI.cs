@@ -28,6 +28,7 @@ public class UI : MonoBehaviour
     public bool isInGame;
     const float transitionTime = 0.1f;
     private Color numberButtonsStartingColor; // their color at the start of the game
+    private Vector2 egcOriSize; // endGameContainer original size
     private void Start() {
         // show the home scene during the start of the game
         homeScene.SetActive(true);
@@ -36,6 +37,7 @@ public class UI : MonoBehaviour
         }
 
         numberButtonsStartingColor = difficultyButtons[0].GetComponent<Image>().color;
+        egcOriSize = endGameContainer.GetComponent<RectTransform>().sizeDelta;
 
         // adding listeners to buttons
         newGameButton.GetComponent<Button>().onClick.AddListener(() => TransitionScene(homeScene, newGameScene));
@@ -74,22 +76,8 @@ public class UI : MonoBehaviour
         }
     }
 
-    public void EndGame(){
-        Fade(0.5f, () => {
-            endGameContainer.SetActive(true);
-            // hide the end game container
-            endGameContainer.GetComponent<RectTransform>().sizeDelta = new Vector2(600, 0);
-            for (int i = 0; i < endGameContainer.transform.childCount; i++){   
-                    endGameContainer.transform.GetChild(i).gameObject.SetActive(false);
-            }
-            // reshow it
-            LeanTween.size(endGameContainer.GetComponent<RectTransform>(), new Vector2(600, 550), 0.2f).setOnComplete(() => {
-                // re-enable children
-                for (int i = 0; i < endGameContainer.transform.childCount; i++){   
-                    endGameContainer.transform.GetChild(i).gameObject.SetActive(true);
-                }
-            });
-        });
+    public void EndGame(){ // end OF game
+        Fade(0.5f, () => endGameContainer.GetComponent<Modal>().Open(0.1f));
         // TransitionScene(gameScene, newGameScene);
     }
 
@@ -104,20 +92,20 @@ public class UI : MonoBehaviour
         isInGame = true;
     }
 
+    public void LeaveGame(){
+        if (endGameContainer.activeSelf){ // player made too many mistakes
+            endGameContainer.GetComponent<Modal>().Close(0.1f);
+            EndFade();
+        }
+        TransitionScene(gameScene, homeScene);
+    }
+
     public void ContinueGame(){ // when the player runs out of lives and decides to continue
         EndFade();
-
-        // disable children
-        for (int i = 0; i < endGameContainer.transform.childCount; i++){   
-            endGameContainer.transform.GetChild(i).gameObject.SetActive(false);
-        }
-        
-        // scale height to 0
-        LeanTween.size(endGameContainer.GetComponent<RectTransform>(), new Vector2(600, 0), 0.2f).setOnComplete(() => {
-            endGameContainer.SetActive(false);
+        endGameContainer.GetComponent<Modal>().Close(() => {
             main.grid.mistakesLeft = 3;
             OnMistake(true);
-        });
+        }, 0.1f);
     }
 
     public void ChangeNumber(int num){ // called by the buttons that let you change the number to place

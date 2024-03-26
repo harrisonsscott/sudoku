@@ -686,7 +686,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1818948514}
         m_TargetAssemblyTypeName: UI, Assembly-CSharp
-        m_MethodName: ContinueGame
+        m_MethodName: LeaveGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5067,6 +5067,7 @@ GameObject:
   - component: {fileID: 1300734376}
   - component: {fileID: 1300734378}
   - component: {fileID: 1300734377}
+  - component: {fileID: 1300734379}
   m_Layer: 5
   m_Name: EndGame
   m_TagString: Untagged
@@ -5134,6 +5135,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1300734375}
   m_CullTransparentMesh: 1
+--- !u!114 &1300734379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1300734375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 235c7c15e7b4a77f0a5a7107b42fbedb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1340149681
 GameObject:
   m_ObjectHideFlags: 0
