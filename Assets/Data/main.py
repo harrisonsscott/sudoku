@@ -1,4 +1,4 @@
-import random, json, os, os.path
+import random, json, os, os.path, sys
 
 
 def is_valid_move(grid, row, col, num):
@@ -39,7 +39,10 @@ def print_grid(grid):
 
 
 def encode(full, partial):
-    path = f"{os.path.dirname(__file__)}/data.json"
+    path = f"{os.path.dirname(__file__)}/{sys.argv[3]}"
+    if not os.path.isfile(path):
+        with open(path, "w") as file:
+            json.dump({"puzzles": []}, file, indent=4)
     stringFull = ""
     stringPartial = ""
     for row in range(9):
@@ -49,8 +52,9 @@ def encode(full, partial):
 
     with open(path, "r") as file:
         data = json.load(file)
-    print(stringPartial)
-    print(stringFull)
+    print("P: " + stringPartial)
+    print("F: " + stringFull)
+    print("\n")
     data["puzzles"].append({"partial": stringPartial, "full": stringFull})
     with open(path, 'w') as file:
         json.dump(data, file, indent=4)
@@ -58,7 +62,7 @@ def encode(full, partial):
 
 def generate_partial(grid):
     grid1 = [row[:] for row in grid]
-    cells_to_remove = 40
+    cells_to_remove = int(sys.argv[2])
     index = 0
     while cells_to_remove > 0:
         index += 1
@@ -78,7 +82,7 @@ def generate_partial(grid):
     return grid1
 
 
-for i in range(249):
+for i in range(int(sys.argv[1])):
     full = generate_grid()
     partial = generate_partial(full)
     if partial != 0:

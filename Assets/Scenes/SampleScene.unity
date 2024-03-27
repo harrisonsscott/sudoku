@@ -3827,6 +3827,7 @@ GameObject:
   m_Component:
   - component: {fileID: 881718614}
   - component: {fileID: 881718613}
+  - component: {fileID: 881718615}
   m_Layer: 0
   m_Name: Ads
   m_TagString: Untagged
@@ -3863,6 +3864,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &881718615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 881718612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f0ab098059cb8ca1a0c4b6730056a6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  androidAdUnitID: Interstitial_Android
+  iosAdUnitID: Interstitial_iOS
 --- !u!1 &882405689
 GameObject:
   m_ObjectHideFlags: 0
@@ -6862,7 +6877,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56a0e8e794577d220a5cfcf369de4214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jsonFile: {fileID: 4900000, guid: 730ec0b5652b1a402993eea85b4ea86e, type: 3}
+  difficulties:
+  - {fileID: 4900000, guid: c90b006964c60a902a17e9b4cdf7df97, type: 3}
+  - {fileID: 4900000, guid: 34bcc498d518e682cb4b71c2019f7ca3, type: 3}
+  - {fileID: 4900000, guid: d40dc657fe0a48481a5425690ee81ba9, type: 3}
+  - {fileID: 4900000, guid: f24aaeae8672220efa949885dfed81ac, type: 3}
   grid: {fileID: 0}
   path: 
 --- !u!4 &1818948513

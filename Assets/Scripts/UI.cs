@@ -19,7 +19,7 @@ public class UI : MonoBehaviour
     public GameObject endGameContainer; // container that displays when the game ends
     public TMP_Text timer; // text that displays the time in the game
     public TMP_Text score; // text that displays score
-    public List<GameObject> difficultyButtons; // the easy, medium, etc buttons when you're making a new game
+    public GameObject[] difficultyButtons; // the easy, medium, etc buttons when you're making a new game
     public List<GameObject> numberButtons; // the buttons that let you change the number to place
     [Header("Other")]
     public AdsInitializer ads;
@@ -40,12 +40,15 @@ public class UI : MonoBehaviour
 
         // adding listeners to buttons
         newGameButton.GetComponent<Button>().onClick.AddListener(() => TransitionScene(homeScene, newGameScene));
-        // create a new grid and transition to that grid during a new game
+        // create a new grid and transition to it
+        int index = 0;
         foreach (var element in difficultyButtons){
+            int index2 = index;
             element.GetComponent<Button>().onClick.AddListener(() => {
                 TransitionScene(newGameScene, gameScene);
-                StartGame();
-            });
+                StartGame(index2);
+            });   
+            index += 1;
         }
     }
 
@@ -81,9 +84,9 @@ public class UI : MonoBehaviour
         // TransitionScene(gameScene, newGameScene);
     }
 
-    public void StartGame(){
+    public void StartGame(int difficulty){
         OnMistake(true); // refresh the hearts
-        main.grid = Data.GetSudokuGrid(main.jsonFile);
+        main.grid = Data.GetSudokuGrid(main.difficulties[difficulty]);
         main.grid.Draw(sudoku.gameObject, sudoku.textReference);
         main.grid.OnScoreChange(OnScoreChange);
         main.grid.OnMistake(() => OnMistake(false));

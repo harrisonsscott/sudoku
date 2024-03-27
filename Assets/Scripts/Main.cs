@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class Main : MonoBehaviour
 {
-    public TextAsset jsonFile;
+    public TextAsset[] difficulties; // list of json files with sudoku grids, ex: easy.json, hard.jsonZ
     public SudokuGrid grid;
     public string path;
 
     private void Start() {
-
-        grid = Data.GetSudokuGrid(jsonFile);
+        grid = Data.GetSudokuGrid(difficulties[0]);
         grid.Log();
     }
+
 }
