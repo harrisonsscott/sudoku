@@ -3681,6 +3681,7 @@ GameObject:
   - component: {fileID: 854132864}
   - component: {fileID: 854132863}
   - component: {fileID: 854132862}
+  - component: {fileID: 854132865}
   m_Layer: 5
   m_Name: Continue
   m_TagString: Untagged
@@ -3802,6 +3803,66 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 854132860}
   m_CullTransparentMesh: 1
+--- !u!114 &854132865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854132860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32a4e72657ecd409597ae204b11cc84c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  androidadUnitID: Interstitial_Android
+  iosadUnitID: Interstitial_iOS
+--- !u!1 &881718612
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 881718614}
+  - component: {fileID: 881718613}
+  m_Layer: 0
+  m_Name: Ads
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &881718613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 881718612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94f575ce1f058da15980a4e1f4b3e1cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  credentialsJson: {fileID: 4900000, guid: 65fb3e2035611db1d8654a01cc3fc964, type: 3}
+  testingMode: 1
+--- !u!4 &881718614
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 881718612}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 738.8904, y: 780.0498, z: -0.9576336}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &882405689
 GameObject:
   m_ObjectHideFlags: 0
@@ -5372,6 +5433,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 235c7c15e7b4a77f0a5a7107b42fbedb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  originalSize: {x: 0, y: 0}
+  rect: {fileID: 0}
 --- !u!1 &1340149681
 GameObject:
   m_ObjectHideFlags: 0
@@ -6855,6 +6918,7 @@ MonoBehaviour:
   - {fileID: 1378874928}
   - {fileID: 696952861}
   - {fileID: 792998856}
+  ads: {fileID: 881718613}
   sudoku: {fileID: 1225700410}
   main: {fileID: 1818948512}
   timeSinceStart: 0
@@ -7997,3 +8061,4 @@ SceneRoots:
   - {fileID: 1818948513}
   - {fileID: 618071752}
   - {fileID: 1408216738}
+  - {fileID: 881718614}

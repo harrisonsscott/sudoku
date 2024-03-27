@@ -22,22 +22,21 @@ public class UI : MonoBehaviour
     public List<GameObject> difficultyButtons; // the easy, medium, etc buttons when you're making a new game
     public List<GameObject> numberButtons; // the buttons that let you change the number to place
     [Header("Other")]
+    public AdsInitializer ads;
     public Sudoku sudoku;
     public Main main;
     public float timeSinceStart; // time since a new game has started
     public bool isInGame;
     const float transitionTime = 0.1f;
     private Color numberButtonsStartingColor; // their color at the start of the game
-    private Vector2 egcOriSize; // endGameContainer original size
     private void Start() {
         // show the home scene during the start of the game
         homeScene.SetActive(true);
-        foreach (var element in new GameObject[]{newGameScene, gameScene, endGameContainer, fadeGameObject}){
+        foreach (var element in new GameObject[]{newGameScene, gameScene, fadeGameObject}){
            element.SetActive(false);
         }
 
         numberButtonsStartingColor = difficultyButtons[0].GetComponent<Image>().color;
-        egcOriSize = endGameContainer.GetComponent<RectTransform>().sizeDelta;
 
         // adding listeners to buttons
         newGameButton.GetComponent<Button>().onClick.AddListener(() => TransitionScene(homeScene, newGameScene));
@@ -77,6 +76,7 @@ public class UI : MonoBehaviour
     }
 
     public void EndGame(){ // end OF game
+        endGameContainer.transform.GetChild(2).GetComponent<AdsRewardedButton>().LoadAd();
         Fade(0.5f, () => endGameContainer.GetComponent<Modal>().Open(0.1f));
         // TransitionScene(gameScene, newGameScene);
     }

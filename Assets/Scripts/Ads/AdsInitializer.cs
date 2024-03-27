@@ -18,6 +18,7 @@ public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener {
 
     private void Awake() {
         credentials = JsonUtility.FromJson<Credentials>(credentialsJson.text);
+        InitializeAds();
     }
 
     private void InitializeAds(){

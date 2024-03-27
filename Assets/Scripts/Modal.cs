@@ -2,12 +2,12 @@ using System;
 using UnityEngine;
 
 public class Modal : MonoBehaviour {
-    private Vector2 originalSize;
-    private RectTransform rect;
+    [SerializeField] Vector2 originalSize;
+    [SerializeField] RectTransform rect;
 
-    private void Start() {
+    private void Awake() {
         rect = GetComponent<RectTransform>();
-        originalSize = rect.sizeDelta;    
+        originalSize = rect.sizeDelta;
     }
 
     public void Close(Action onFinished, float time = 0.2f){
