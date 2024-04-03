@@ -8,7 +8,10 @@ public class Main : MonoBehaviour
     public string path;
 
     private void Start() {
-        grid = Data.GetSudokuGrid(difficulties[0]);
+        grid = SaveData.LoadGrid();
+        if (grid == null){
+            grid = Data.GetSudokuGrid(difficulties[0]);
+        }
         grid.Log();
     }
 
