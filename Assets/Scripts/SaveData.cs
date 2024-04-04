@@ -1,7 +1,3 @@
-
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.UI;
 using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -10,38 +6,55 @@ using System.Runtime.Serialization.Formatters.Binary;
 public class UserData {
     public int[,] gridData;
     public string gridFull;
-    public int score;
-    public int mistakesLeft;
 
     public UserData(SudokuGrid grid){
         gridFull = grid.full;
         gridData = grid.data;
-        score = grid.score;
-        mistakesLeft = grid.mistakesLeft;
+    }
+
+    public UserData(){
+        gridData = new int[2,2] { {1, 2}, {1, 2} };
+        gridFull = "1201";
     }
 }
+
 public static class SaveData {
     // save data to persistent data path
     public static void SaveGrid(SudokuGrid grid){
-        BinaryFormatter formatter = new();
+        // BinaryFormatter formatter = new();
 
-        FileStream stream = new(GlobalConstants.persistentDataPath, FileMode.Create);
-        UserData data = new(grid);
+        // FileStream stream = new(GlobalConstants.dataPath, FileMode.Create);
+        // UserData data = new();
 
-        formatter.Serialize(stream, data);
-        stream.Close();
+        // formatter.Serialize(stream, data);
+        // stream.Close();
+
+        string json = JsonUtility.ToJson(grid, true);
+        File.WriteAllText(GlobalConstants.dataPath, json);
     }
 
-    public static SudokuGrid LoadGrid(){
-        if (File.Exists(GlobalConstants.persistentDataPath)){
-            BinaryFormatter formatter = new();
-            FileStream stream = new(GlobalConstants.persistentDataPath, FileMode.Open);
+    public static SudokuData LoadGrid(){
+        // if (File.Exists(GlobalConstants.dataPath)){
+        //     BinaryFormatter formatter = new();
+        //     FileStream stream = new FileStream(GlobalConstants.dataPath, FileMode.Open);
 
-            SudokuGrid data = formatter.Deserialize(stream) as SudokuGrid;
-            stream.Close();
-            return data;
+        //     UserData data = formatter.Deserialize(stream) as UserData;
+        //     Debug.Log(formatter.Deserialize(stream));
+        //     stream.Close();
+
+        //     return data;
+        // } else {
+        //     
+        // }
+
+        if (File.Exists(GlobalConstants.dataPath)){
+            SudokuData data = new();
+            string json = File.ReadAllText(GlobalConstants.dataPath);
+            return JsonUtility.FromJson<SudokuData>(json);
+            // return JsonUtility.FromJsonOverwrite<SudokuGrid>(json, data);
         } else {
             Debug.Log("error fetching data!");
+            
             return null;
         }
     }

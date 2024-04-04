@@ -7118,6 +7118,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeGameObject: {fileID: 1288569049}
+  continueButton: {fileID: 657729064}
   newGameButton: {fileID: 413443390}
   homeScene: {fileID: 655006563}
   newGameScene: {fileID: 164416051}

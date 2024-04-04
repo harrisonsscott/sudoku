@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AdaptivePerformance;
@@ -32,6 +33,14 @@ public class SudokuGrid : MonoBehaviour {
 
     private Action onScoreChange; // action that is called when the score is changed
     private Action onMistake; // action thats called when the player misplaces a number
+
+    public SudokuGrid(){
+        
+    }
+    public SudokuGrid(string partial, string full){
+        this.partial = partial;
+        this.full = full;
+    }
 
     public void Log(){
         string row = "";
@@ -149,5 +158,15 @@ public static class Data {
         }
 
         return data;
+    }
+
+    public static SudokuGrid dataToGrid(SudokuData data){ // converts a SudokuData to SudokuGrid
+        SudokuGrid grid = new SudokuGrid();
+        grid.partial = data.partial;
+        grid.full = data.full;
+
+        grid.data = DecodeSudokuString(grid.partial);
+
+        return grid;
     }
 }

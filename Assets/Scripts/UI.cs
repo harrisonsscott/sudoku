@@ -10,6 +10,7 @@ public class UI : MonoBehaviour
 {
     [Header("UI")]
     public GameObject fadeGameObject;
+    public GameObject continueButton;
     public GameObject newGameButton;
     public GameObject homeScene;
     public GameObject newGameScene;
@@ -40,6 +41,7 @@ public class UI : MonoBehaviour
 
         // adding listeners to buttons
         newGameButton.GetComponent<Button>().onClick.AddListener(() => TransitionScene(homeScene, newGameScene));
+        continueButton.GetComponent<Button>().onClick.AddListener(() => LoadPreviousGame());
         // create a new grid and transition to it
         int index = 0;
         foreach (var element in difficultyButtons){
@@ -56,7 +58,10 @@ public class UI : MonoBehaviour
         if (isInGame){
             timeSinceStart += Time.deltaTime;
             timer.text = FormatTime(timeSinceStart);
+            SaveData.SaveGrid(main.grid);
         }
+        //  Debug.Log("a");
+        // Debug.Log(main.grid.full);
     }
 
     private void OnScoreChange(){
@@ -84,12 +89,19 @@ public class UI : MonoBehaviour
         // TransitionScene(gameScene, newGameScene);
     }
 
-    public void StartGame(int difficulty){
+    public void StartGame(int difficulty, SudokuData data=null){
         OnMistake(true); // refresh the hearts
-        main.grid = Data.GetSudokuGrid(main.difficulties[difficulty]);
+        if (data != null){
+            main.grid = Data.dataToGrid(data);
+        } else {
+            main.grid = Data.GetSudokuGrid(main.difficulties[difficulty]);
+        }
+        
         main.grid.Draw(sudoku.gameObject, sudoku.textReference);
         main.grid.OnScoreChange(OnScoreChange);
         main.grid.OnMistake(() => OnMistake(false));
+        SaveData.SaveGrid(main.grid);
+        Debug.Log("saved data");
         ChangeNumber(1, numberButtons[0]);
         timeSinceStart = 0;
         isInGame = true;
@@ -109,6 +121,11 @@ public class UI : MonoBehaviour
             main.grid.mistakesLeft = 3;
             OnMistake(true);
         }, 0.1f);
+    }
+
+    public void LoadPreviousGame(){ // loads the game that was saved
+        StartGame(0, SaveData.LoadGrid());
+        TransitionScene(homeScene, gameScene);
     }
 
     public void ChangeNumber(int num){ // called by the buttons that let you change the number to place
