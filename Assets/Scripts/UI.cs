@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
+using Unity.Mathematics;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -60,6 +63,7 @@ public class UI : MonoBehaviour
     private void SaveGame(){
         if (isInGame){
             SaveData.SaveGrid(main.grid);
+            Debug.Log(main.grid.mistakesLeft == 0 ? "none" : math.max(0, main.grid.mistakesLeft));
         }
     }
 
@@ -68,8 +72,6 @@ public class UI : MonoBehaviour
             timeSinceStart += Time.deltaTime;
             timer.text = FormatTime(timeSinceStart);
         }
-        //  Debug.Log("a");
-        // Debug.Log(main.grid.full);
     }
 
     private void OnScoreChange(){
@@ -115,7 +117,9 @@ public class UI : MonoBehaviour
     }
 
     public void LeaveGame(){
+        isInGame = false;
         if (endGameContainer.activeSelf){ // player made too many mistakes
+            SaveData.WipeGridData();
             endGameContainer.GetComponent<Modal>().Close(0.1f);
             EndFade();
         }
@@ -131,8 +135,12 @@ public class UI : MonoBehaviour
     }
 
     public void LoadPreviousGame(){ // loads the game that was saved
-        StartGame(0, SaveData.LoadGrid());
-        TransitionScene(homeScene, gameScene);
+        if (File.ReadAllText(GlobalConstants.dataPath) != ""){
+            StartGame(0, SaveData.LoadGrid());
+            TransitionScene(homeScene, gameScene); // game saved, load it
+        } else {
+            TransitionScene(homeScene, newGameScene); // no game saved, create a new one
+        }
     }
 
     public void ChangeNumber(int num){ // called by the buttons that let you change the number to place

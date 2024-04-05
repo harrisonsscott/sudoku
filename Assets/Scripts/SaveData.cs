@@ -61,4 +61,10 @@ public static class SaveData {
             return null;
         }
     }
+
+    // wipe the data when the player fails a sudoku grid
+    public static void WipeGridData(){
+        Debug.Log("wiped data");
+        File.WriteAllText(GlobalConstants.dataPath, "");
+    }
 }
