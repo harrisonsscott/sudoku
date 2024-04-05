@@ -52,13 +52,21 @@ public class UI : MonoBehaviour
             });   
             index += 1;
         }
+
+        InvokeRepeating("SaveGame", 2, 1);
+        
+    }
+
+    private void SaveGame(){
+        if (isInGame){
+            SaveData.SaveGrid(main.grid);
+        }
     }
 
     private void Update() {
         if (isInGame){
             timeSinceStart += Time.deltaTime;
             timer.text = FormatTime(timeSinceStart);
-            SaveData.SaveGrid(main.grid);
         }
         //  Debug.Log("a");
         // Debug.Log(main.grid.full);
@@ -101,7 +109,6 @@ public class UI : MonoBehaviour
         main.grid.OnScoreChange(OnScoreChange);
         main.grid.OnMistake(() => OnMistake(false));
         SaveData.SaveGrid(main.grid);
-        Debug.Log("saved data");
         ChangeNumber(1, numberButtons[0]);
         timeSinceStart = 0;
         isInGame = true;

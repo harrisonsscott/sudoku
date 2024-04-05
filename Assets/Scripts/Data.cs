@@ -16,10 +16,28 @@ public class PuzzleData {
     public SudokuData[] puzzles;
 }
 
+// used for loading sudoku puzzles from json along with data saving
 [System.Serializable]
 public class SudokuData {
     public string partial;
     public string full;
+    public int[,] dataArray;
+    public string data;
+    public int mistakesLeft;
+
+    public SudokuData(){}
+
+    public SudokuData(string partial, string full){
+        this.partial = partial;
+        this.full = full;
+    }
+
+    public SudokuData(string partial, string full, int[,] data){
+        this.partial = partial;
+        this.full = full;
+        this.dataArray = data;
+        this.data = Data.SerializeArray(data);
+    }
 }
 
 [System.Serializable]
@@ -164,9 +182,21 @@ public static class Data {
         SudokuGrid grid = new SudokuGrid();
         grid.partial = data.partial;
         grid.full = data.full;
-
-        grid.data = DecodeSudokuString(grid.partial);
+        grid.data = DecodeSudokuString(data.data);
+        grid.mistakesLeft = data.mistakesLeft;
 
         return grid;
+    }
+
+    public static string SerializeArray(int[,] array){
+        string str = "";
+
+        for (int x = 0; x < GlobalConstants.gridX; x++){
+            for (int y = 0; y < GlobalConstants.gridY; y++){
+                str += array[y,x];
+            }
+        }
+        
+        return str;
     }
 }

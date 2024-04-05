@@ -29,7 +29,10 @@ public static class SaveData {
         // formatter.Serialize(stream, data);
         // stream.Close();
 
-        string json = JsonUtility.ToJson(grid, true);
+        SudokuData data = new SudokuData(grid.partial, grid.full, grid.data);
+        data.mistakesLeft = grid.mistakesLeft;
+
+        string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(GlobalConstants.dataPath, json);
     }
 
