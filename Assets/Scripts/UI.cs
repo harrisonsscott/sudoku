@@ -78,7 +78,7 @@ public class UI : MonoBehaviour
         score.text = $"Score: {main.grid.score}";
     }
 
-    private void OnMistake(bool refresh){
+    private void OnMistake(bool refresh=false){
         for (int i = 0; i < heartContainer.transform.childCount; i++){
             RawImage image = heartContainer.transform.GetChild(i).GetComponent<RawImage>();
 
@@ -138,6 +138,8 @@ public class UI : MonoBehaviour
         if (File.ReadAllText(GlobalConstants.dataPath) != ""){
             StartGame(0, SaveData.LoadGrid());
             TransitionScene(homeScene, gameScene); // game saved, load it
+            // Wait(2, () => OnMistake(true));
+            OnMistake(false);
         } else {
             TransitionScene(homeScene, newGameScene); // no game saved, create a new one
         }
@@ -218,5 +220,9 @@ public class UI : MonoBehaviour
         to.SetActive(true);
         toRect.localPosition = new Vector3(toRect.rect.width, 0, 0);
         LeanTween.moveLocal(to, Vector3.zero, transitionTime);
+    }
+
+    public void Wait(float time, Action action){ // waits a certain amount of time before executing an action
+        LeanTween.value(0, 1, time).setOnComplete(action);
     }
 }
