@@ -24,6 +24,7 @@ public class SudokuData {
     public int[,] dataArray;
     public string data;
     public int mistakesLeft;
+    public float time; // in seconds
 
     public SudokuData(){}
 
@@ -48,6 +49,7 @@ public class SudokuGrid : MonoBehaviour {
     public int mistakesLeft = 3;
     public int score;
     public int combo; // amount of times the user has correctly placed a number in a row, gives more score
+    public float time; // in seconds
 
     private Action onScoreChange; // action that is called when the score is changed
     private Action onMistake; // action thats called when the player misplaces a number
@@ -60,11 +62,15 @@ public class SudokuGrid : MonoBehaviour {
         this.full = full;
     }
 
-    public void Log(){
+    public void Log(bool logFull=false){ // logs either the current sudoku grid or the completed one
         string row = "";
         for (int y = 0; y < GlobalConstants.gridY; y++){
             for (int x = 0; x < GlobalConstants.gridX; x++){
-                row += data[x, y] + ", ";
+                if (!logFull){
+                    row += data[x, y] + ", ";
+                } else {
+                    row += Data.DecodeSudokuString(full)[x, y] + ", ";
+                }
             }
             row += "\n";
         }
@@ -184,11 +190,12 @@ public static class Data {
         grid.full = data.full;
         grid.data = DecodeSudokuString(data.data);
         grid.mistakesLeft = data.mistakesLeft;
-
+        grid.time = data.time;
+        
         return grid;
     }
 
-    public static string SerializeArray(int[,] array){
+    public static string SerializeArray(int[,] array){ // converts an array into a string for storing, ex: [1, 2, 5] -> "125"
         string str = "";
 
         for (int x = 0; x < GlobalConstants.gridX; x++){

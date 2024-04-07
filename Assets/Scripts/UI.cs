@@ -21,6 +21,7 @@ public class UI : MonoBehaviour
     public GameObject sudokuGrid;
     public GameObject heartContainer; // container with 3 hearts above the sudoku board
     public GameObject endGameContainer; // container that displays when the game ends
+    public GameObject completedGameContainer; // container that displays when the user completes a sudoku grid
     public TMP_Text timer; // text that displays the time in the game
     public TMP_Text score; // text that displays score
     public GameObject[] difficultyButtons; // the easy, medium, etc buttons when you're making a new game
@@ -63,14 +64,18 @@ public class UI : MonoBehaviour
     private void SaveGame(){
         if (isInGame){
             SaveData.SaveGrid(main.grid);
-            Debug.Log(main.grid.mistakesLeft == 0 ? "none" : math.max(0, main.grid.mistakesLeft));
         }
     }
 
     private void Update() {
         if (isInGame){
-            timeSinceStart += Time.deltaTime;
-            timer.text = FormatTime(timeSinceStart);
+            main.grid.time += Time.deltaTime;
+            timer.text = FormatTime(main.grid.time);
+            if (main.grid.full == Data.SerializeArray(main.grid.data)){ // player completed the board
+                isInGame = false;
+                completedGameContainer.transform.GetChild(1).GetComponent<TMP_Text>().text = $"You finished in \n{FormatTime(timeSinceStart)}!";
+                Fade(0.5f, () => completedGameContainer.GetComponent<Modal>().Open(0.1f));
+            }
         }
     }
 
@@ -123,6 +128,13 @@ public class UI : MonoBehaviour
             endGameContainer.GetComponent<Modal>().Close(0.1f);
             EndFade();
         }
+
+        if (completedGameContainer.activeSelf){ // player completed the puzzle
+            SaveData.WipeGridData();
+            completedGameContainer.GetComponent<Modal>().Close(0.1f);
+            EndFade();
+        }
+
         TransitionScene(gameScene, homeScene);
     }
 
