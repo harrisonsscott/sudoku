@@ -28,9 +28,9 @@ public class UI : MonoBehaviour
     public List<GameObject> numberButtons; // the buttons that let you change the number to place
     [Header("Other")]
     public AdsInitializer ads;
+    public AdsBanner adsBanner;
     public Sudoku sudoku;
     public Main main;
-    public float timeSinceStart; // time since a new game has started
     public bool isInGame;
     const float transitionTime = 0.1f;
     private Color numberButtonsStartingColor; // their color at the start of the game
@@ -73,7 +73,7 @@ public class UI : MonoBehaviour
             timer.text = FormatTime(main.grid.time);
             if (main.grid.full == Data.SerializeArray(main.grid.data)){ // player completed the board
                 isInGame = false;
-                completedGameContainer.transform.GetChild(1).GetComponent<TMP_Text>().text = $"You finished in \n{FormatTime(timeSinceStart)}!";
+                completedGameContainer.transform.GetChild(1).GetComponent<TMP_Text>().text = $"You finished in \n{FormatTime(main.grid.time)}!";
                 Fade(0.5f, () => completedGameContainer.GetComponent<Modal>().Open(0.1f));
             }
         }
@@ -117,8 +117,9 @@ public class UI : MonoBehaviour
         main.grid.OnMistake(() => OnMistake(false));
         SaveData.SaveGrid(main.grid);
         ChangeNumber(1, numberButtons[0]);
-        timeSinceStart = 0;
         isInGame = true;
+        adsBanner.LoadBanner();
+        // main.grid.data = Data.DecodeSudokuString(main.grid.full); // immediately finish the game
     }
 
     public void LeaveGame(){

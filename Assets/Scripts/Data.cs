@@ -49,7 +49,7 @@ public class SudokuGrid : MonoBehaviour {
     public int mistakesLeft = 3;
     public int score;
     public int combo; // amount of times the user has correctly placed a number in a row, gives more score
-    public float time; // in seconds
+    public float time; // time since the game started
 
     private Action onScoreChange; // action that is called when the score is changed
     private Action onMistake; // action thats called when the player misplaces a number
