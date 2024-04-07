@@ -1,14 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
-using UnityEngine.AdaptivePerformance;
-using UnityEngine.AI;
-using UnityEngine.UI;
 
 // puzzle data is generated with python
 [System.Serializable]

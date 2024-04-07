@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Advertisements;
 
 public class AdsBanner : MonoBehaviour
@@ -58,7 +57,7 @@ public class AdsBanner : MonoBehaviour
     void OnBannerLoaded(){
         ShowBannerAd();
     }
-    
+
     void OnBannerClicked() { }
     void OnBannerShown() { }
     void OnBannerHidden() { }

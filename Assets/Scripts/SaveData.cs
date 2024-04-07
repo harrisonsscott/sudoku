@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 
 public static class SaveData {
     // save data to persistent data path

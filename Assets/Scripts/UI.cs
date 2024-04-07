@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
-using Unity.Mathematics;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -137,6 +135,7 @@ public class UI : MonoBehaviour
         }
 
         TransitionScene(gameScene, homeScene);
+        adsBanner.HideBannerAd();
     }
 
     public void ContinueGame(){ // when the player runs out of lives and decides to continue
