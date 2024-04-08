@@ -1,6 +1,30 @@
 using System;
+using System.Globalization;
 using TMPro;
+using Unity.VisualScripting.Dependencies.Sqlite;
+using Unity.VisualScripting.ReorderableList.Element_Adder_Menu;
 using UnityEngine;
+
+// color scheme for the ui
+[System.Serializable]
+public class Theme {
+    // use hex strings for colors
+    public string background;
+    public string button;
+    public string text; // set automatically
+
+    public Theme(string background, string button){
+        this.background = background;
+        this.button = button;
+        this.text = Data.Grayscale(Data.Invert(background)).ToHex();
+    }
+
+    public Theme(string background, string button, string text){
+        this.background = background;
+        this.button = button;
+        this.text = text;
+    }
+}
 
 // puzzle data is generated with python
 [System.Serializable]
@@ -197,5 +221,57 @@ public static class Data {
         }
         
         return str;
+    }
+
+    public static Color HexToRGB(string hex){ // converts a hex code into an RGB value, ex "#ff0500" -> (255, 5 ,0)
+        int shift = 0;
+
+        if (hex.Substring(0, 1) == "#"){
+            shift = 1; // ignore the hashtag if it exists
+        }
+
+        string r = hex.Substring(0 + shift, 2);
+        string g = hex.Substring(2 + shift, 2);
+        string b = hex.Substring(4 + shift, 2);
+        
+        return new Color(
+            int.Parse(r, NumberStyles.HexNumber) / 255f,
+            int.Parse(g, NumberStyles.HexNumber) / 255f,
+            int.Parse(b, NumberStyles.HexNumber) / 255f);
+
+    }
+
+    public static string RGBToHex(Color rgb){
+        return ColorUtility.ToHtmlStringRGBA(rgb);
+    }
+
+    public static Color Invert(Color color){ // flips the colors
+        return new Color(1 - color.r, 1 - color.g, 1 - color.b);
+    }
+
+    public static Color Invert(string hex){
+        return Invert(HexToRGB(hex));
+    }
+
+    public static Color Grayscale(Color color){ // converts a color into black and white
+        float avg = (color.r + color.g + color.b)/3f;
+
+        return new Color(avg, avg, avg);
+    }
+
+    public static Color Grayscale(String hex){
+        return Grayscale(HexToRGB(hex));
+    }
+
+    public static bool HasComponent <T>(this GameObject obj) where T:Component{
+        return obj.GetComponent<T>() != null;
+    }
+
+    public static string ToHex (this Color color){
+        return RGBToHex(color);
+    }
+
+    public static Color ToRGB (this string str){
+        return HexToRGB(str);
     }
 }
