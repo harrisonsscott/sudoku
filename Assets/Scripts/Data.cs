@@ -127,6 +127,7 @@ public class SudokuGrid : MonoBehaviour {
         RectTransform rect = image.GetComponent<RectTransform>();
 
         Vector2 gridSize = new Vector2(rect.sizeDelta.x/GlobalConstants.gridX, rect.sizeDelta.y/GlobalConstants.gridY);
+        textReference.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width/9, Screen.width/9);
 
         for (int x = 0; x < GlobalConstants.gridX; x++){
             for (int y = 0;  y < GlobalConstants.gridY; y++){
@@ -135,7 +136,6 @@ public class SudokuGrid : MonoBehaviour {
 
                 textGO.transform.SetParent(image.transform);
 
-                textGO.GetComponent<RectTransform>().sizeDelta = gridSize;
                 textGO.GetComponent<RectTransform>().localPosition = new Vector2(gridSize.x*x, -gridSize.y*y) - new Vector2(rect.sizeDelta.x/2, -rect.sizeDelta.y/2) + new Vector2(gridSize.x, -gridSize.y)/2;
                 // textGO.GetComponent<RectTransform>().localPosition = -(new Vector2(gridSize.x*x, -gridSize.y*y) - new Vector2(rect.sizeDelta.x/2, rect.sizeDelta.y/2) + gridSize/2);
                 text.text = data[x,y] + "";

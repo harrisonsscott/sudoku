@@ -8,7 +8,7 @@ public class AdsBanner : MonoBehaviour
     [SerializeField] string _androidAdUnitId = "Banner_Android";
     [SerializeField] string _iOSAdUnitId = "Banner_iOS";
     string id = null;
- 
+    
     void Start()
     {
         #if UNITY_IOS

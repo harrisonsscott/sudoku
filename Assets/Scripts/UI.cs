@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEditor;
 
 // handles all the UI functions
 public class UI : MonoBehaviour
@@ -33,6 +34,7 @@ public class UI : MonoBehaviour
     const float transitionTime = 0.1f;
     private Color numberButtonsStartingColor; // their color at the start of the game
     private void Start() {
+        Debug.Log(Screen.width);
         // show the home scene during the start of the game
         homeScene.SetActive(true);
         foreach (var element in new GameObject[]{newGameScene, gameScene, fadeGameObject}){
@@ -236,5 +238,17 @@ public class UI : MonoBehaviour
 
     public void Wait(float time, Action action){ // waits a certain amount of time before executing an action
         LeanTween.value(0, 1, time).setOnComplete(action);
+    }
+}
+
+[CustomEditor(typeof(UI))]
+public class UIEditor : Editor {
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+
+        if (GUILayout.Button("Toggle Banner Ad")){
+            FindAnyObjectByType<AdsBanner>().HideBannerAd();
+        }
     }
 }
