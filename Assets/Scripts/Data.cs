@@ -223,7 +223,7 @@ public static class Data {
         return str;
     }
 
-    public static Color HexToRGB(string hex){ // converts a hex code into an RGB value, ex "#ff0500" -> (255, 5 ,0)
+    private static Color HexToRGB(string hex){ // converts a hex code into an RGB value, ex "#ff0500" -> (255, 5 ,0)
         int shift = 0;
 
         if (hex.Substring(0, 1) == "#"){
@@ -241,7 +241,7 @@ public static class Data {
 
     }
 
-    public static string RGBToHex(Color rgb){
+    private static string RGBToHex(Color rgb){
         return ColorUtility.ToHtmlStringRGBA(rgb);
     }
 

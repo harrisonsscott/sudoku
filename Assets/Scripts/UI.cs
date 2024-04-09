@@ -11,6 +11,7 @@ using UnityEditor;
 public class UI : MonoBehaviour
 {
     [Header("UI")]
+    public GameObject header; // CONTENT of the top of the game scene
     public GameObject fadeGameObject;
     public GameObject continueButton;
     public GameObject newGameButton;
@@ -33,8 +34,11 @@ public class UI : MonoBehaviour
     public bool isInGame;
     const float transitionTime = 0.1f;
     private Color numberButtonsStartingColor; // their color at the start of the game
+    [SerializeField] Theme theme;
     private void Start() {
-        Debug.Log(Screen.width);
+        // set theme
+        // theme = new("#ff7700", "#0f0f0f");
+        ApplyTheme(theme);
         // show the home scene during the start of the game
         homeScene.SetActive(true);
         foreach (var element in new GameObject[]{newGameScene, gameScene, fadeGameObject}){
@@ -61,6 +65,30 @@ public class UI : MonoBehaviour
         
     }
 
+    public void ApplyTheme(Theme theme){
+        Camera.main.backgroundColor = theme.background.ToRGB();
+
+        header.GetComponent<Image>().color = theme.background.ToRGB();
+
+        // update text color
+        foreach (var element in FindObjectsByType<TMP_Text>(FindObjectsSortMode.None)){
+            element.color = Data.Grayscale(Data.Invert(theme.background.ToRGB()));
+            if (element.transform.parent.gameObject.HasComponent<Button>()){
+                element.transform.parent.gameObject.GetComponent<Image>().color = theme.button.ToRGB();
+            }
+        }
+
+        foreach(var element in FindObjectsByType<Button>(FindObjectsSortMode.None)){
+            // make text-less buttons that same color as the text
+            if (element.transform.childCount > 0){
+                if (!element.transform.GetChild(0).gameObject.HasComponent<TMP_Text>()){
+                    element.GetComponent<Image>().color = theme.text.ToRGB();
+                }
+            }
+            
+        }
+    }
+
     private void SaveGame(){
         if (isInGame){
             SaveData.SaveGrid(main.grid);
@@ -68,6 +96,7 @@ public class UI : MonoBehaviour
     }
 
     private void Update() {
+        ApplyTheme(theme); // constantly update theme
         if (isInGame){
             main.grid.time += Time.deltaTime;
             timer.text = FormatTime(main.grid.time);
