@@ -63,6 +63,7 @@ public class UI : MonoBehaviour
         toggleThemeButton.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(() => {
             userPref.themeIndex = (userPref.themeIndex + 1) % themes.Count;
             SaveData.Save(main.grid, userPref);
+            ApplyTheme(true);
         });
         // create a new grid and transition to it
         int index = 0;
@@ -79,7 +80,7 @@ public class UI : MonoBehaviour
         
     }
 
-    public void ApplyTheme(){
+    public void ApplyTheme(bool full = false){ // set full to true during a new scene, uses more memory
         Theme theme = themes[userPref.themeIndex];
         Camera.main.backgroundColor = theme.background.ToRGB();
 
@@ -91,25 +92,28 @@ public class UI : MonoBehaviour
             if (element.color != theme.text2.ToRGB())
                 element.color = Data.Grayscale(Data.Invert(theme.background.ToRGB()));
             
-            if (parent.gameObject.HasComponent<Button>()){
+            if (parent.gameObject.HasComponent<Button>() && full){
                 parent.gameObject.GetComponent<Image>().color = parent.gameObject == sudokuGrid ? theme.sudokuGrid.ToRGB() : theme.button.ToRGB();
             }
         }
 
-        foreach(var element in FindObjectsByType<Button>(FindObjectsSortMode.None)){
-            // make text-less buttons that same color as the text
-            if (element.transform.childCount > 0){
-                if (!element.transform.GetChild(0).gameObject.HasComponent<TMP_Text>()){
-                    element.GetComponent<Image>().color = theme.text.ToRGB();
+        if (full){
+            foreach(var element in FindObjectsByType<Button>(FindObjectsSortMode.None)){
+                // make text-less buttons that same color as the text
+                if (element.transform.childCount > 0){
+                    if (!element.transform.GetChild(0).gameObject.HasComponent<TMP_Text>()){
+                        element.GetComponent<Image>().color = theme.text.ToRGB();
+                    }
+                }
+            }
+
+            foreach(var element in FindObjectsByType<RawImage>(FindObjectsSortMode.None)){
+                if (element.texture == border){
+                    element.color = theme.background.ToRGB();
                 }
             }
         }
 
-        foreach(var element in FindObjectsByType<RawImage>(FindObjectsSortMode.None)){
-            if (element.texture == border){
-                element.color = theme.background.ToRGB();
-            }
-        }
 
         backButton.GetComponent<RawImage>().color = theme.text.ToRGB();
         // make the toggle theme button's color to be the next theme
@@ -218,22 +222,18 @@ public class UI : MonoBehaviour
     public void ChangeNumber(int num){ // called by the buttons that let you change the number to place
         sudoku.number = num;
         foreach (var element in numberButtons){
-            if (element == EventSystem.current.currentSelectedGameObject){
-                element.GetComponent<Image>().color = numberButtonsStartingColor - new Color(0.1f, 0.1f, 0.1f, 0);
-            } else {
-                element.GetComponent<Image>().color = numberButtonsStartingColor;
-            }
+            element.GetComponent<Image>().color = element == EventSystem.current.currentSelectedGameObject
+                ? themes[userPref.themeIndex].button.ToRGB() - new Color(0.1f, 0.1f, 0.1f, 0)
+                : themes[userPref.themeIndex].button.ToRGB();
         }
     }
 
     public void ChangeNumber(int num, GameObject go){
         sudoku.number = num;
         foreach (var element in numberButtons){
-            if (element == go){
-                element.GetComponent<Image>().color = numberButtonsStartingColor - new Color(0.1f, 0.1f, 0.1f, 0);
-            } else {
-                element.GetComponent<Image>().color = numberButtonsStartingColor;
-            }
+            element.GetComponent<Image>().color = go == EventSystem.current.currentSelectedGameObject
+                ? themes[userPref.themeIndex].button.ToRGB() - new Color(0.1f, 0.1f, 0.1f, 0)
+                : themes[userPref.themeIndex].button.ToRGB();
         }
     }
 
@@ -290,6 +290,7 @@ public class UI : MonoBehaviour
         to.SetActive(true);
         toRect.localPosition = new Vector3(toRect.rect.width, 0, 0);
         LeanTween.moveLocal(to, Vector3.zero, transitionTime);
+        ApplyTheme(true);
     }
 
     public void Wait(float time, Action action){ // waits a certain amount of time before executing an action
