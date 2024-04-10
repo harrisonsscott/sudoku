@@ -33,19 +33,18 @@ public class UI : MonoBehaviour
     public AdsBanner adsBanner;
     public Sudoku sudoku;
     public Main main;
+    public UserPref userPref;
     public bool isInGame;
     const float transitionTime = 0.1f;
     private Color numberButtonsStartingColor; // their color at the start of the game
 
     [Header("Theme")]
     [SerializeField] List<Theme> themes;
-    [SerializeField] int themeIndex; // index of for the themes array
     private void Start() {
+        userPref = SaveData.LoadPrefs();
         // set themes
         themes.Add(new("#ffffff", "#e6F2FA", "#ffffff")); // light mode
         themes.Add(new("#151521", "#212234")); // dark mode
-
-        themeIndex = 0;
 
         ApplyTheme();
 
@@ -76,7 +75,7 @@ public class UI : MonoBehaviour
     }
 
     public void ApplyTheme(){
-        Theme theme = themes[themeIndex];
+        Theme theme = themes[userPref.themeIndex];
         Camera.main.backgroundColor = theme.background.ToRGB();
 
         header.GetComponent<Image>().color = theme.background.ToRGB();
@@ -110,7 +109,7 @@ public class UI : MonoBehaviour
 
     private void SaveGame(){
         if (isInGame){
-            SaveData.SaveGrid(main.grid);
+            SaveData.Save(main.grid, userPref);
         }
     }
 
@@ -163,7 +162,7 @@ public class UI : MonoBehaviour
         main.grid.Draw(sudoku.gameObject, sudoku.textReference);
         main.grid.OnScoreChange(OnScoreChange);
         main.grid.OnMistake(() => OnMistake(false));
-        SaveData.SaveGrid(main.grid);
+        SaveData.Save(main.grid, userPref);
         ChangeNumber(1, numberButtons[0]);
         isInGame = true;
         adsBanner.LoadBanner();

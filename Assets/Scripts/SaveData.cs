@@ -1,9 +1,30 @@
 using UnityEngine;
 using System.IO;
 
+[System.Serializable]
+public class UserData {
+    public SudokuData gridData;
+    public UserPref userPref;
+
+    public UserData(SudokuData gridData){
+        this.gridData = gridData;
+        this.userPref = new UserPref();
+    }
+
+    public UserData(SudokuData gridData, UserPref userPref){
+        this.gridData = gridData;
+        this.userPref = userPref;
+    }
+}
+
+[System.Serializable]
+public class UserPref { // user preferences
+    public int themeIndex;
+}
+
 public static class SaveData {
     // save data to persistent data path
-    public static void SaveGrid(SudokuGrid grid){
+    public static void Save(SudokuGrid grid, UserPref userPref){
 
         SudokuData data = new SudokuData(grid.partial, grid.full, grid.data)
         {
@@ -11,14 +32,29 @@ public static class SaveData {
             time = grid.time
         };
 
-        string json = JsonUtility.ToJson(data, true);
+        UserData userData = new(data, userPref);
+
+        string json = JsonUtility.ToJson(userData, true);
+
         File.WriteAllText(GlobalConstants.dataPath, json);
     }
 
     public static SudokuData LoadGrid(){
         if (File.Exists(GlobalConstants.dataPath)){
             string json = File.ReadAllText(GlobalConstants.dataPath);
-            return JsonUtility.FromJson<SudokuData>(json);
+            UserData data = JsonUtility.FromJson<UserData>(json);
+            return data.gridData;
+        } else {
+            Debug.Log("error fetching data!");
+            return null;
+        }
+    }
+
+    public static UserPref LoadPrefs(){
+        if (File.Exists(GlobalConstants.dataPath)){
+            string json = File.ReadAllText(GlobalConstants.dataPath);
+            UserData data = JsonUtility.FromJson<UserData>(json);
+            return data.userPref;
         } else {
             Debug.Log("error fetching data!");
             return null;
