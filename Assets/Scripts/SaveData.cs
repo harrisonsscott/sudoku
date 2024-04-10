@@ -20,6 +20,10 @@ public class UserData {
 [System.Serializable]
 public class UserPref { // user preferences
     public int themeIndex;
+
+    public UserPref(){
+        themeIndex = 0;
+    }
 }
 
 public static class SaveData {
@@ -46,6 +50,7 @@ public static class SaveData {
             return data.gridData;
         } else {
             Debug.Log("error fetching data!");
+            Save(new SudokuGrid(), new UserPref());
             return null;
         }
     }
@@ -56,6 +61,7 @@ public static class SaveData {
             UserData data = JsonUtility.FromJson<UserData>(json);
             return data.userPref;
         } else {
+            Save(new SudokuGrid(), new UserPref());
             Debug.Log("error fetching data!");
             return null;
         }
@@ -64,6 +70,8 @@ public static class SaveData {
     // clear the sudoku grid data
     public static void WipeGridData(){
         Debug.Log("wiped data");
+        UserPref userPref = LoadPrefs();
         File.WriteAllText(GlobalConstants.dataPath, "");
+        Save(new SudokuGrid(), userPref);
     }
 }

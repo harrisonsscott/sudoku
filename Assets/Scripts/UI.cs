@@ -39,13 +39,13 @@ public class UI : MonoBehaviour
     private Color numberButtonsStartingColor; // their color at the start of the game
 
     [Header("Theme")]
-    [SerializeField] List<Theme> themes;
+    public List<Theme> themes;
     public GameObject toggleThemeButton; // button in the top right corner that lets you swap themes
     private void Start() {
-        userPref = SaveData.LoadPrefs();
+        userPref = SaveData.LoadPrefs() == null ? SaveData.LoadPrefs() : new UserPref();
         // set themes
-        themes.Add(new("#ffffff", "#e6F2FA", "#ffffff")); // light mode
-        themes.Add(new("#151521", "#212234")); // dark mode
+        themes.Add(new("#ffffff", "#e6F2FA", "#ffffff", "#ff7700")); // light mode
+        themes.Add(new("#151521", "#212234", "#151521", "#ff7700")); // dark mode
 
         ApplyTheme();
 
@@ -88,7 +88,9 @@ public class UI : MonoBehaviour
         // update text and button color
         foreach (var element in FindObjectsByType<TMP_Text>(FindObjectsSortMode.None)){
             Transform parent = element.transform.parent;
-            element.color = Data.Grayscale(Data.Invert(theme.background.ToRGB()));
+            if (element.color != theme.text2.ToRGB())
+                element.color = Data.Grayscale(Data.Invert(theme.background.ToRGB()));
+            
             if (parent.gameObject.HasComponent<Button>()){
                 parent.gameObject.GetComponent<Image>().color = parent.gameObject == sudokuGrid ? theme.sudokuGrid.ToRGB() : theme.button.ToRGB();
             }

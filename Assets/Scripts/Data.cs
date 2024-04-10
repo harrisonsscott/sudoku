@@ -1,8 +1,6 @@
 using System;
 using System.Globalization;
 using TMPro;
-using Unity.VisualScripting.Dependencies.Sqlite;
-using Unity.VisualScripting.ReorderableList.Element_Adder_Menu;
 using UnityEngine;
 
 // color scheme for the ui
@@ -13,12 +11,14 @@ public class Theme {
     public string button;
     public string sudokuGrid; // automatically set to button
     public string text; // set automatically
+    public string text2; // secondary text color, set automatically
 
     public Theme(string background, string button){
         this.background = background;
         this.button = button;
         this.sudokuGrid = button;
         this.text = Data.Grayscale(Data.Invert(background)).ToHex();
+        this.text2 = this.text;
     }
 
     public Theme(string background, string button, string sudokuGrid){
@@ -26,6 +26,15 @@ public class Theme {
         this.button = button;
         this.sudokuGrid = sudokuGrid;
         this.text = Data.Grayscale(Data.Invert(background)).ToHex();
+        this.text2 = this.text;
+    }
+
+    public Theme(string background, string button, string sudokuGrid, string text2){
+        this.background = background;
+        this.button = button;
+        this.sudokuGrid = sudokuGrid;
+        this.text = Data.Grayscale(Data.Invert(background)).ToHex();
+        this.text2 = text2;
     }
 }
 
@@ -153,6 +162,9 @@ public class SudokuGrid : MonoBehaviour {
 
         RectTransform rect = image.GetComponent<RectTransform>();
 
+        UI ui = FindAnyObjectByType<UI>();
+        UserPref pref = SaveData.LoadPrefs();
+
         Vector2 gridSize = new Vector2(rect.sizeDelta.x/GlobalConstants.gridX, rect.sizeDelta.y/GlobalConstants.gridY);
         textReference.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width/9, Screen.width/9);
 
@@ -160,6 +172,10 @@ public class SudokuGrid : MonoBehaviour {
             for (int y = 0;  y < GlobalConstants.gridY; y++){
                 GameObject textGO = Instantiate(textReference);
                 TMP_Text text = textGO.GetComponent<TMP_Text>();
+
+                // numbers on the sudoku grid that the player placed will be different than the ones pre-generated
+                if (partial.Substring(y * GlobalConstants.gridX + x, 1).ToInt() == 0)
+                    text.color = "ff7700".ToRGB();
 
                 textGO.transform.SetParent(image.transform);
 
@@ -226,34 +242,12 @@ public static class Data {
         return str;
     }
 
-    private static Color HexToRGB(string hex){ // converts a hex code into an RGB value, ex "#ff0500" -> (255, 5 ,0)
-        int shift = 0;
-
-        if (hex.Substring(0, 1) == "#"){
-            shift = 1; // ignore the hashtag if it exists
-        }
-
-        string r = hex.Substring(0 + shift, 2);
-        string g = hex.Substring(2 + shift, 2);
-        string b = hex.Substring(4 + shift, 2);
-        
-        return new Color(
-            int.Parse(r, NumberStyles.HexNumber) / 255f,
-            int.Parse(g, NumberStyles.HexNumber) / 255f,
-            int.Parse(b, NumberStyles.HexNumber) / 255f);
-
-    }
-
-    private static string RGBToHex(Color rgb){
-        return ColorUtility.ToHtmlStringRGBA(rgb);
-    }
-
     public static Color Invert(Color color){ // flips the colors
         return new Color(1 - color.r, 1 - color.g, 1 - color.b);
     }
 
     public static Color Invert(string hex){
-        return Invert(HexToRGB(hex));
+        return Invert(hex.ToRGB());
     }
 
     public static Color Grayscale(Color color){ // converts a color into black and white
@@ -263,18 +257,6 @@ public static class Data {
     }
 
     public static Color Grayscale(String hex){
-        return Grayscale(HexToRGB(hex));
-    }
-
-    public static bool HasComponent <T>(this GameObject obj) where T:Component{
-        return obj.GetComponent<T>() != null;
-    }
-
-    public static string ToHex (this Color color){
-        return RGBToHex(color);
-    }
-
-    public static Color ToRGB (this string str){
-        return HexToRGB(str);
+        return Grayscale(hex.ToRGB());
     }
 }
