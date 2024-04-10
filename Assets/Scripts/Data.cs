@@ -11,18 +11,21 @@ public class Theme {
     // use hex strings for colors
     public string background;
     public string button;
+    public string sudokuGrid; // automatically set to button
     public string text; // set automatically
 
     public Theme(string background, string button){
         this.background = background;
         this.button = button;
+        this.sudokuGrid = button;
         this.text = Data.Grayscale(Data.Invert(background)).ToHex();
     }
 
-    public Theme(string background, string button, string text){
+    public Theme(string background, string button, string sudokuGrid){
         this.background = background;
         this.button = button;
-        this.text = text;
+        this.sudokuGrid = sudokuGrid;
+        this.text = Data.Grayscale(Data.Invert(background)).ToHex();
     }
 }
 

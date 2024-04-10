@@ -36,11 +36,18 @@ public class UI : MonoBehaviour
     public bool isInGame;
     const float transitionTime = 0.1f;
     private Color numberButtonsStartingColor; // their color at the start of the game
-    [SerializeField] Theme theme;
+
+    [Header("Theme")]
+    [SerializeField] List<Theme> themes;
+    [SerializeField] int themeIndex; // index of for the themes array
     private void Start() {
-        // set theme
-        theme = new("#151521", "#212234");
-        ApplyTheme(theme);
+        // set themes
+        themes.Add(new("#ffffff", "#e6F2FA", "#ffffff")); // light mode
+        themes.Add(new("#151521", "#212234")); // dark mode
+
+        themeIndex = 0;
+
+        ApplyTheme();
 
         // show the home scene during the start of the game
         homeScene.SetActive(true);
@@ -68,16 +75,18 @@ public class UI : MonoBehaviour
         
     }
 
-    public void ApplyTheme(Theme theme){
+    public void ApplyTheme(){
+        Theme theme = themes[themeIndex];
         Camera.main.backgroundColor = theme.background.ToRGB();
 
         header.GetComponent<Image>().color = theme.background.ToRGB();
 
-        // update text color
+        // update text and button color
         foreach (var element in FindObjectsByType<TMP_Text>(FindObjectsSortMode.None)){
+            Transform parent = element.transform.parent;
             element.color = Data.Grayscale(Data.Invert(theme.background.ToRGB()));
-            if (element.transform.parent.gameObject.HasComponent<Button>()){
-                element.transform.parent.gameObject.GetComponent<Image>().color = theme.button.ToRGB();
+            if (parent.gameObject.HasComponent<Button>()){
+                parent.gameObject.GetComponent<Image>().color = parent.gameObject == sudokuGrid ? theme.sudokuGrid.ToRGB() : theme.button.ToRGB();
             }
         }
 
@@ -106,7 +115,7 @@ public class UI : MonoBehaviour
     }
 
     private void Update() {
-        ApplyTheme(theme); // constantly update theme
+        ApplyTheme(); // constantly update theme
         if (isInGame){
             main.grid.time += Time.deltaTime;
             timer.text = FormatTime(main.grid.time);
