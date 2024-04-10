@@ -40,6 +40,7 @@ public class UI : MonoBehaviour
 
     [Header("Theme")]
     [SerializeField] List<Theme> themes;
+    public GameObject toggleThemeButton; // button in the top right corner that lets you swap themes
     private void Start() {
         userPref = SaveData.LoadPrefs();
         // set themes
@@ -59,6 +60,10 @@ public class UI : MonoBehaviour
         // adding listeners to buttons
         newGameButton.GetComponent<Button>().onClick.AddListener(() => TransitionScene(homeScene, newGameScene));
         continueButton.GetComponent<Button>().onClick.AddListener(() => LoadPreviousGame());
+        toggleThemeButton.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(() => {
+            userPref.themeIndex = (userPref.themeIndex + 1) % themes.Count;
+            SaveData.Save(main.grid, userPref);
+        });
         // create a new grid and transition to it
         int index = 0;
         foreach (var element in difficultyButtons){
@@ -105,6 +110,8 @@ public class UI : MonoBehaviour
         }
 
         backButton.GetComponent<RawImage>().color = theme.text.ToRGB();
+        // make the toggle theme button's color to be the next theme
+        toggleThemeButton.GetComponent<Image>().color = themes[(userPref.themeIndex + 1) % themes.Count].background.ToRGB();
     }
 
     private void SaveGame(){
