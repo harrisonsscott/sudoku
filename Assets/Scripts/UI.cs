@@ -22,6 +22,8 @@ public class UI : MonoBehaviour
     public GameObject heartContainer; // container with 3 hearts above the sudoku board
     public GameObject endGameContainer; // container that displays when the game ends
     public GameObject completedGameContainer; // container that displays when the user completes a sudoku grid
+    public GameObject backButton; // button in the top of the screen during that lets you go back
+    public Texture2D border; // image with a shadow that makes a border
     public TMP_Text timer; // text that displays the time in the game
     public TMP_Text score; // text that displays score
     public GameObject[] difficultyButtons; // the easy, medium, etc buttons when you're making a new game
@@ -37,8 +39,9 @@ public class UI : MonoBehaviour
     [SerializeField] Theme theme;
     private void Start() {
         // set theme
-        // theme = new("#ff7700", "#0f0f0f");
+        theme = new("#151521", "#212234");
         ApplyTheme(theme);
+
         // show the home scene during the start of the game
         homeScene.SetActive(true);
         foreach (var element in new GameObject[]{newGameScene, gameScene, fadeGameObject}){
@@ -85,8 +88,15 @@ public class UI : MonoBehaviour
                     element.GetComponent<Image>().color = theme.text.ToRGB();
                 }
             }
-            
         }
+
+        foreach(var element in FindObjectsByType<RawImage>(FindObjectsSortMode.None)){
+            if (element.texture == border){
+                element.color = theme.background.ToRGB();
+            }
+        }
+
+        backButton.GetComponent<RawImage>().color = theme.text.ToRGB();
     }
 
     private void SaveGame(){

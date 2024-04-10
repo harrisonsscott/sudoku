@@ -7940,6 +7940,8 @@ MonoBehaviour:
   heartContainer: {fileID: 1796295447}
   endGameContainer: {fileID: 1300734375}
   completedGameContainer: {fileID: 801255924}
+  backButton: {fileID: 1543698997}
+  border: {fileID: 2800000, guid: a80646adedbbc42c5b258e62452c38df, type: 3}
   timer: {fileID: 2036106911}
   score: {fileID: 1576330950}
   difficultyButtons:
@@ -7966,7 +7968,7 @@ MonoBehaviour:
   theme:
     background: '151521 '
     button: '212234 '
-    text: 
+    text: 557766
 --- !u!1 &1862288950
 GameObject:
   m_ObjectHideFlags: 0
