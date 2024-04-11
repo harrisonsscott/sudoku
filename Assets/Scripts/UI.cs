@@ -44,7 +44,7 @@ public class UI : MonoBehaviour
     private void Start() {
         userPref = SaveData.LoadPrefs() == null ? SaveData.LoadPrefs() : new UserPref();
         // set themes
-        themes.Add(new("#ffffff", "#e6F2FA", "#ffffff", "#ff7700")); // light mode
+        themes.Add(new("#ffffff", "#e6F2FA", "#ffffff", "#4c7c9c")); // light mode
         themes.Add(new("#151521", "#212234", "#151521", "#ff7700")); // dark mode
 
         ApplyTheme();
@@ -298,6 +298,7 @@ public class UI : MonoBehaviour
     }
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(UI))]
 public class UIEditor : Editor {
     public override void OnInspectorGUI()
@@ -309,3 +310,4 @@ public class UIEditor : Editor {
         }
     }
 }
+#endif

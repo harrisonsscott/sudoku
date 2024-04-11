@@ -82,12 +82,12 @@ public class SudokuGrid : MonoBehaviour {
     private Action onScoreChange; // action that is called when the score is changed
     private Action onMistake; // action thats called when the player misplaces a number
 
-    public SudokuGrid(){
-        
-    }
+    public SudokuGrid(){}
+
     public SudokuGrid(string partial, string full){
         this.partial = partial;
         this.full = full;
+
     }
 
     public void Log(bool logFull=false){ // logs either the current sudoku grid or the completed one
@@ -175,7 +175,7 @@ public class SudokuGrid : MonoBehaviour {
 
                 // numbers on the sudoku grid that the player placed will be different than the ones pre-generated
                 if (partial.Substring(y * GlobalConstants.gridX + x, 1).ToInt() == 0)
-                    text.color = "ff7700".ToRGB();
+                    text.color = ui.themes[ui.userPref.themeIndex].text2.ToRGB();
 
                 textGO.transform.SetParent(image.transform);
 

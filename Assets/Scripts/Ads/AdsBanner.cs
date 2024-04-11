@@ -34,6 +34,7 @@ public class AdsBanner : MonoBehaviour
 
     public void ShowBannerAd()
     {
+        if (GlobalConstants.disableAds) return;
         BannerOptions options = new BannerOptions
         {
             clickCallback = OnBannerClicked,

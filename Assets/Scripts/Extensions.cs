@@ -27,21 +27,25 @@ public class Func {
 }
 
 public static class Extensions {
-    public static bool HasComponent <T>(this GameObject obj) where T:Component{
-        return obj.GetComponent<T>() != null;
-    }
+    // color functions
 
-    public static string ToHex (this Color color){
+    public static string ToHex (this Color color){ // converts a color object into a hex string
         return Func.RGBToHex(color);
     }
 
-    public static Color ToRGB (this string str){
+    public static Color ToRGB (this string str){ // converts a hex string into a color object
         return Func.HexToRGB(str);
     }
 
-    public static int ToInt(this string str){
+    // other
+
+    public static int ToInt(this string str){ // converts a string into an int
         int num;
         int.TryParse(str, out num);
         return num;
+    }
+
+    public static bool HasComponent <T>(this GameObject obj) where T:Component{
+        return obj.GetComponent<T>() != null;
     }
 }
