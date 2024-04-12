@@ -194,13 +194,13 @@ public class SudokuGrid : MonoBehaviour {
     // highs a part of the sudoku grid when the user clicks on it
     public void Highlight(GameObject image, Vector2 pos, GameObject selectPanelX, GameObject selectPanelY, GameObject selectPanelZ, GameObject selectPanelW){ 
         RectTransform rect = image.GetComponent<RectTransform>();
-        selectPanelX.GetComponent<RectTransform>().sizeDelta = new Vector2(rect.sizeDelta.x, rect.sizeDelta.y/GlobalConstants.gridY);
-        selectPanelY.GetComponent<RectTransform>().sizeDelta = new Vector2(rect.sizeDelta.x/GlobalConstants.gridX, rect.sizeDelta.y);
-        selectPanelZ.GetComponent<RectTransform>().sizeDelta = new Vector2(rect.sizeDelta.y/GlobalConstants.gridX*3, rect.sizeDelta.x/GlobalConstants.gridY*3);
-        selectPanelW.GetComponent<RectTransform>().sizeDelta = new Vector2(rect.sizeDelta.x/GlobalConstants.gridX, rect.sizeDelta.y/GlobalConstants.gridY);
+        selectPanelX.GetComponent<RectTransform>().sizeDelta = new Vector2(rect.sizeDelta.x, rect.sizeDelta.y/GlobalConstants.gridY + rect.localPosition.y);
+        selectPanelY.GetComponent<RectTransform>().sizeDelta = new Vector2(rect.sizeDelta.x/GlobalConstants.gridX, rect.sizeDelta.y + rect.localPosition.y);
+        selectPanelZ.GetComponent<RectTransform>().sizeDelta = new Vector2(rect.sizeDelta.y/GlobalConstants.gridX*3, rect.sizeDelta.x/GlobalConstants.gridY*3 + rect.localPosition.y);
+        selectPanelW.GetComponent<RectTransform>().sizeDelta = new Vector2(rect.sizeDelta.x/GlobalConstants.gridX, rect.sizeDelta.y/GlobalConstants.gridY + rect.localPosition.y);
 
-        selectPanelX.transform.localPosition = new Vector2(0, -(pos.y - (GlobalConstants.gridY/2)) * rect.sizeDelta.y/GlobalConstants.gridY);
-        selectPanelY.transform.localPosition = new Vector2((pos.x - (GlobalConstants.gridX/2))* rect.sizeDelta.x / GlobalConstants.gridX, 0);
+        selectPanelX.transform.localPosition = new Vector2(0, -(pos.y - (GlobalConstants.gridY/2)) * rect.sizeDelta.y/GlobalConstants.gridY + rect.localPosition.y);
+        selectPanelY.transform.localPosition = new Vector2((pos.x - (GlobalConstants.gridX/2))* rect.sizeDelta.x / GlobalConstants.gridX, rect.localPosition.y);
 
         selectPanelZ.transform.localPosition = new Vector2(
             ((int)(pos.x/3) - 1) % 3 * rect.sizeDelta.x/GlobalConstants.gridX * 3, -(((int)(pos.y/3) - 1) % 3) * rect.sizeDelta.y/GlobalConstants.gridY * 3
