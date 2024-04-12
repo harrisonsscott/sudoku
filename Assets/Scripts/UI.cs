@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEditor;
+using Unity.VisualScripting;
 
 // handles all the UI functions
 public class UI : MonoBehaviour
@@ -29,6 +30,7 @@ public class UI : MonoBehaviour
     public GameObject[] difficultyButtons; // the easy, medium, etc buttons when you're making a new game
     public List<GameObject> numberButtons; // the buttons that let you change the number to place
     [Header("Other")]
+    public Material highlightMaterial;
     public AdsInitializer ads;
     public AdsBanner adsBanner;
     public Sudoku sudoku;
@@ -76,6 +78,15 @@ public class UI : MonoBehaviour
             index += 1;
         }
 
+        index = 1;
+        foreach(var element in numberButtons){
+            int index2 = index;
+            element.GetComponent<Button>().onClick.AddListener(() => {
+                main.grid.Place(index2);
+                sudoku.Draw();
+            });
+            index += 1;
+        }
         InvokeRepeating("SaveGame", 2, 1);
         
     }
@@ -93,7 +104,10 @@ public class UI : MonoBehaviour
                 element.color = Data.Grayscale(Data.Invert(theme.background.ToRGB()));
             
             if (parent.gameObject.HasComponent<Button>() && full){
-                parent.gameObject.GetComponent<Image>().color = parent.gameObject == sudokuGrid ? theme.sudokuGrid.ToRGB() : theme.button.ToRGB();
+                Image image = parent.gameObject.GetComponent<Image>();
+                float trans = image.color.a;
+                image.color = parent.gameObject == sudokuGrid ? theme.sudokuGrid.ToRGB() : theme.button.ToRGB();
+                image.color = new Color(image.color.r, image.color.g, image.color.b, trans); // keep transparency
             }
         }
 
@@ -118,6 +132,7 @@ public class UI : MonoBehaviour
         backButton.GetComponent<RawImage>().color = theme.text.ToRGB();
         // make the toggle theme button's color to be the next theme
         toggleThemeButton.GetComponent<Image>().color = themes[(userPref.themeIndex + 1) % themes.Count].background.ToRGB();
+        highlightMaterial.color = theme.button.ToRGB();
     }
 
     private void SaveGame(){
@@ -176,7 +191,7 @@ public class UI : MonoBehaviour
         main.grid.OnScoreChange(OnScoreChange);
         main.grid.OnMistake(() => OnMistake(false));
         SaveData.Save(main.grid, userPref);
-        ChangeNumber(1, numberButtons[0]);
+        // ChangeNumber(1, numberButtons[0]);
         isInGame = true;
         adsBanner.LoadBanner();
         // main.grid.data = Data.DecodeSudokuString(main.grid.full); // immediately finish the game
@@ -216,24 +231,6 @@ public class UI : MonoBehaviour
             OnMistake(false);
         } else {
             TransitionScene(homeScene, newGameScene); // no game saved, create a new one
-        }
-    }
-
-    public void ChangeNumber(int num){ // called by the buttons that let you change the number to place
-        sudoku.number = num;
-        foreach (var element in numberButtons){
-            element.GetComponent<Image>().color = element == EventSystem.current.currentSelectedGameObject
-                ? themes[userPref.themeIndex].button.ToRGB() - new Color(0.1f, 0.1f, 0.1f, 0)
-                : themes[userPref.themeIndex].button.ToRGB();
-        }
-    }
-
-    public void ChangeNumber(int num, GameObject go){
-        sudoku.number = num;
-        foreach (var element in numberButtons){
-            element.GetComponent<Image>().color = go == EventSystem.current.currentSelectedGameObject
-                ? themes[userPref.themeIndex].button.ToRGB() - new Color(0.1f, 0.1f, 0.1f, 0)
-                : themes[userPref.themeIndex].button.ToRGB();
         }
     }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using TMPro;
+using Unity.Collections;
 using UnityEngine;
 
 // color scheme for the ui
@@ -78,6 +79,7 @@ public class SudokuGrid : MonoBehaviour {
     public int score;
     public int combo; // amount of times the user has correctly placed a number in a row, gives more score
     public float time; // time since the game started
+    public Vector2 position; // part that the user has currently selected
 
     private Action onScoreChange; // action that is called when the score is changed
     private Action onMistake; // action thats called when the player misplaces a number
@@ -132,7 +134,10 @@ public class SudokuGrid : MonoBehaviour {
     1 - Number already placed on that area
     2 - Incorrect
     */
-    public int Place(int x, int y, int num){ 
+    public int Place(int num){
+        int x = (int)position.x;
+        int y = (int)position.y;
+
         if (data[x, y] != 0){
             return 1;
         }
@@ -148,10 +153,6 @@ public class SudokuGrid : MonoBehaviour {
             UpdateScore(false);
             return 2;
         }
-    }
-
-    public int Place(Vector2 pos, int num){
-        return Place((int)pos.x, (int)pos.y, num);
     }
 
     public void Draw(GameObject image, GameObject textReference){ // draws the grid onto an image, DON'T CALL OFTEN (MEMORY INTENSIVE)
@@ -188,7 +189,15 @@ public class SudokuGrid : MonoBehaviour {
                     textGO.SetActive(true);
             }
         }
-        
+    }
+    
+    public void Highlight(GameObject image, Vector2 pos, GameObject selectPanelX, GameObject selectPanelY){ // highs a part of the sudoku grid when the user clicks on it
+        RectTransform rect = image.GetComponent<RectTransform>();
+        selectPanelX.GetComponent<RectTransform>().sizeDelta = new Vector2(rect.sizeDelta.x, rect.sizeDelta.y/GlobalConstants.gridY);
+        selectPanelY.GetComponent<RectTransform>().sizeDelta = new Vector2(rect.sizeDelta.x/GlobalConstants.gridX, rect.sizeDelta.y);
+
+        selectPanelX.transform.localPosition = new Vector2(0, -(pos.y - (GlobalConstants.gridY/2)) * rect.sizeDelta.y/GlobalConstants.gridY);
+        selectPanelY.transform.localPosition = new Vector2((pos.x - (GlobalConstants.gridX/2))* rect.sizeDelta.x / GlobalConstants.gridX, 0);
     }
 }
 
