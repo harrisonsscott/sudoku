@@ -190,14 +190,27 @@ public class SudokuGrid : MonoBehaviour {
             }
         }
     }
-    
-    public void Highlight(GameObject image, Vector2 pos, GameObject selectPanelX, GameObject selectPanelY){ // highs a part of the sudoku grid when the user clicks on it
+
+    // highs a part of the sudoku grid when the user clicks on it
+    public void Highlight(GameObject image, Vector2 pos, GameObject selectPanelX, GameObject selectPanelY, GameObject selectPanelZ, GameObject selectPanelW){ 
         RectTransform rect = image.GetComponent<RectTransform>();
         selectPanelX.GetComponent<RectTransform>().sizeDelta = new Vector2(rect.sizeDelta.x, rect.sizeDelta.y/GlobalConstants.gridY);
         selectPanelY.GetComponent<RectTransform>().sizeDelta = new Vector2(rect.sizeDelta.x/GlobalConstants.gridX, rect.sizeDelta.y);
+        selectPanelZ.GetComponent<RectTransform>().sizeDelta = new Vector2(rect.sizeDelta.y/GlobalConstants.gridX*3, rect.sizeDelta.x/GlobalConstants.gridY*3);
+        selectPanelW.GetComponent<RectTransform>().sizeDelta = new Vector2(rect.sizeDelta.x/GlobalConstants.gridX, rect.sizeDelta.y/GlobalConstants.gridY);
 
         selectPanelX.transform.localPosition = new Vector2(0, -(pos.y - (GlobalConstants.gridY/2)) * rect.sizeDelta.y/GlobalConstants.gridY);
         selectPanelY.transform.localPosition = new Vector2((pos.x - (GlobalConstants.gridX/2))* rect.sizeDelta.x / GlobalConstants.gridX, 0);
+
+        selectPanelZ.transform.localPosition = new Vector2(
+            ((int)(pos.x/3) - 1) % 3 * rect.sizeDelta.x/GlobalConstants.gridX * 3, -(((int)(pos.y/3) - 1) % 3) * rect.sizeDelta.y/GlobalConstants.gridY * 3
+        );
+
+        selectPanelW.transform.localPosition = new Vector2(
+            selectPanelY.transform.localPosition.x,
+            selectPanelX.transform.localPosition.y
+        );
+            
     }
 }
 

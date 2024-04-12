@@ -30,7 +30,6 @@ public class UI : MonoBehaviour
     public GameObject[] difficultyButtons; // the easy, medium, etc buttons when you're making a new game
     public List<GameObject> numberButtons; // the buttons that let you change the number to place
     [Header("Other")]
-    public Material highlightMaterial;
     public AdsInitializer ads;
     public AdsBanner adsBanner;
     public Sudoku sudoku;
@@ -132,7 +131,8 @@ public class UI : MonoBehaviour
         backButton.GetComponent<RawImage>().color = theme.text.ToRGB();
         // make the toggle theme button's color to be the next theme
         toggleThemeButton.GetComponent<Image>().color = themes[(userPref.themeIndex + 1) % themes.Count].background.ToRGB();
-        highlightMaterial.color = theme.button.ToRGB();
+        sudoku.highlightMaterial.color = theme.button.ToRGB();
+        sudoku.highlightMaterial2.color = Color.Lerp(theme.button.ToRGB(), new Color(0.7f, 0.7f, 0.7f, 1), 0.8f);
     }
 
     private void SaveGame(){

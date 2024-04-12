@@ -12,9 +12,12 @@ public class Sudoku : MonoBehaviour, IPointerClickHandler
     public Main main;
     public GameObject textReference;
     public Material highlightMaterial; // a special shader so the transparency doesn't overlap and look weird
+    public Material highlightMaterial2; // secondary highlight material
 
     private GameObject highlightX;
     private GameObject highlightY;
+    private GameObject highlightZ; // highlights the current section
+    private GameObject highlightW; // highlight the exact location more
 
     private void Start() {
         highlightX = new GameObject("highlightX");
@@ -40,6 +43,18 @@ public class Sudoku : MonoBehaviour, IPointerClickHandler
         highlightY.transform.parent = highlightX.transform.parent;
         highlightY.transform.localScale = new Vector3(1,1,1);
         highlightY.name = "highlightY";
+
+        highlightZ = Instantiate(highlightX);
+        highlightZ.transform.parent = highlightX.transform.parent;
+        highlightZ.transform.localScale = new Vector3(1,1,1);
+        highlightZ.name = "highlightZ";
+
+        highlightW = Instantiate(highlightX);
+        highlightW.transform.parent = highlightX.transform.parent;
+        highlightW.transform.localScale = new Vector3(1,1,1);
+        highlightW.name = "highlightW";
+        highlightW.GetComponent<Image>().material = highlightMaterial2;
+        highlightW.transform.SetSiblingIndex(highlightX.transform.GetSiblingIndex());
     }
 
     public void Draw(){
@@ -62,7 +77,7 @@ public class Sudoku : MonoBehaviour, IPointerClickHandler
             // main.grid.Place(gridPosition, number);
             main.grid.position = gridPosition;
             Draw();
-            main.grid.Highlight(gameObject, gridPosition, highlightX, highlightY);
+            main.grid.Highlight(gameObject, gridPosition, highlightX, highlightY, highlightZ, highlightW);
         }
     }
 

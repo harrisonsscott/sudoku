@@ -5473,7 +5473,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -711.11}
-  m_SizeDelta: {x: 761.0283, y: 716.4873}
+  m_SizeDelta: {x: 750, y: 750}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1225700410
 MonoBehaviour:
@@ -5491,6 +5491,7 @@ MonoBehaviour:
   main: {fileID: 1818948512}
   textReference: {fileID: 346873422}
   highlightMaterial: {fileID: 2100000, guid: ad46c5ac393a993fb9fc32cb85fa962f, type: 2}
+  highlightMaterial2: {fileID: 2100000, guid: b313d9ef2aee1585eb369286eaa930bd, type: 2}
 --- !u!114 &1225700411
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8062,7 +8063,6 @@ MonoBehaviour:
   - {fileID: 1378874928}
   - {fileID: 696952861}
   - {fileID: 792998856}
-  highlightMaterial: {fileID: 2100000, guid: ad46c5ac393a993fb9fc32cb85fa962f, type: 2}
   ads: {fileID: 881718613}
   adsBanner: {fileID: 881718616}
   sudoku: {fileID: 1225700410}
