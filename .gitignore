@@ -78,3 +78,6 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 Assets/data.txt
 Assets/data.txt.meta
+
+# Photoshop Documents
+*.psd
