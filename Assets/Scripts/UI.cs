@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEditor;
 using Unity.VisualScripting;
+using UnityEditorInternal;
 
 // handles all the UI functions
 public class UI : MonoBehaviour
@@ -202,12 +203,14 @@ public class UI : MonoBehaviour
         if (endGameContainer.activeSelf){ // player made too many mistakes
             SaveData.WipeGridData();
             endGameContainer.GetComponent<Modal>().Close(0.1f);
+            continueButton.GetComponent<Button>().interactable = false; // no saved game
             EndFade();
         }
 
         if (completedGameContainer.activeSelf){ // player completed the puzzle
             SaveData.WipeGridData();
             completedGameContainer.GetComponent<Modal>().Close(0.1f);
+            continueButton.GetComponent<Button>().interactable = false; // no saved game
             EndFade();
         }
 
@@ -225,7 +228,12 @@ public class UI : MonoBehaviour
 
     public void LoadPreviousGame(){ // loads the game that was saved
         if (File.ReadAllText(GlobalConstants.dataPath) != ""){
-            StartGame(0, SaveData.LoadGrid());
+            SudokuData data = SaveData.LoadGrid();
+            if (data.time < 0.5f){
+                TransitionScene(homeScene, newGameScene); // the grid data is most likely empty, which would cause an error
+                return;
+            }
+            StartGame(0, data);
             TransitionScene(homeScene, gameScene); // game saved, load it
             // Wait(2, () => OnMistake(true));
             OnMistake(false);
