@@ -77,10 +77,11 @@ public class UI : MonoBehaviour
         hintButton.GetComponent<AdsRewardedButton>().reward = (() => {
             // place a number on a random spot on the grid 
             for (int i = 0; i < 1000; i++){
-                Vector2Int position = new(UnityEngine.Random.Range(0, 9), UnityEngine.Random.Range(0, 9));
-                if (main.grid.data[position.x, position.y] == 0){
-                    main.grid.data[position.x, position.y] = main.grid.full[position.y * GlobalConstants.gridY + position.x] - '0';
+                Vector2Int pos = new(UnityEngine.Random.Range(0, 9), UnityEngine.Random.Range(0, 9));
+                if (main.grid.data[pos.x, pos.y] == 0){
+                    main.grid.data[pos.x, pos.y] = main.grid.full[pos.y * GlobalConstants.gridY + pos.x] - '0';
                     sudoku.Draw();
+                    sudoku.Highlight(pos);
                     break;
                 }
             }

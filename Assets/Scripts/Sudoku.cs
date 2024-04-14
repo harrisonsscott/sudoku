@@ -61,6 +61,10 @@ public class Sudoku : MonoBehaviour, IPointerClickHandler
         main.grid.Draw(gameObject, textReference); // draw the grid data onto the image
     }
 
+    public void Highlight(Vector2 pos){
+        main.grid.Highlight(gameObject, pos, highlightX, highlightY, highlightZ, highlightW);
+    }
+
     public void OnPointerClick(PointerEventData eventData){
         if (eventData.button == PointerEventData.InputButton.Left)
         {
