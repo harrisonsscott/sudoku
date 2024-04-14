@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEditor;
-using Unity.VisualScripting;
-using UnityEditorInternal;
+using Unity.Burst.Intrinsics;
 
 // handles all the UI functions
 public class UI : MonoBehaviour
@@ -25,12 +23,14 @@ public class UI : MonoBehaviour
     public GameObject endGameContainer; // container that displays when the game ends
     public GameObject completedGameContainer; // container that displays when the user completes a sudoku grid
     public GameObject backButton; // button in the top of the screen during that lets you go back
+    public GameObject hintButton;
     public Texture2D border; // image with a shadow that makes a border
     public TMP_Text timer; // text that displays the time in the game
     public TMP_Text score; // text that displays score
     public GameObject[] difficultyButtons; // the easy, medium, etc buttons when you're making a new game
     public List<GameObject> numberButtons; // the buttons that let you change the number to place
     [Header("Other")]
+    public TMP_FontAsset font; // applied to all text objects at runtime
     public AdsInitializer ads;
     public AdsBanner adsBanner;
     public Sudoku sudoku;
@@ -62,6 +62,29 @@ public class UI : MonoBehaviour
         // adding listeners to buttons
         newGameButton.GetComponent<Button>().onClick.AddListener(() => TransitionScene(homeScene, newGameScene));
         continueButton.GetComponent<Button>().onClick.AddListener(() => LoadPreviousGame());
+        // hintButton.GetComponent<Button>().onClick.AddListener(() => {
+        //     // place a number on a random spot on the grid 
+        //     for (int i = 0; i < 1000; i++){
+        //         Vector2Int position = new(UnityEngine.Random.Range(0, 9), UnityEngine.Random.Range(0, 9));
+        //         if (main.grid.data[position.x, position.y] == 0){
+        //             main.grid.data[position.x, position.y] = main.grid.full[position.y * GlobalConstants.gridY + position.x] - '0';
+        //             sudoku.Draw();
+        //             break;
+        //         }
+        //     }
+        // });
+        hintButton.GetComponent<AdsRewardedButton>().LoadAd();
+        hintButton.GetComponent<AdsRewardedButton>().reward = (() => {
+            // place a number on a random spot on the grid 
+            for (int i = 0; i < 1000; i++){
+                Vector2Int position = new(UnityEngine.Random.Range(0, 9), UnityEngine.Random.Range(0, 9));
+                if (main.grid.data[position.x, position.y] == 0){
+                    main.grid.data[position.x, position.y] = main.grid.full[position.y * GlobalConstants.gridY + position.x] - '0';
+                    sudoku.Draw();
+                    break;
+                }
+            }
+        });
         toggleThemeButton.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(() => {
             userPref.themeIndex = (userPref.themeIndex + 1) % themes.Count;
             SaveData.Save(main.grid, userPref);
@@ -86,6 +109,10 @@ public class UI : MonoBehaviour
                 sudoku.Draw();
             });
             index += 1;
+        }
+
+        foreach (var element in FindObjectsByType<TMP_Text>(FindObjectsInactive.Include, FindObjectsSortMode.None)){
+            element.font = font;
         }
         InvokeRepeating("SaveGame", 2, 1);
         
