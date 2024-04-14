@@ -1,3 +1,5 @@
+using System;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Advertisements;
 using UnityEngine.UI;
@@ -10,7 +12,12 @@ public class AdsRewardedButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
     [SerializeField] string androidadUnitID = "Interstitial_Android";
     [SerializeField] string iosadUnitID = "Interstitial_iOS";
     string _adUnitID = null;
+    public Action reward; // function that plays after the user watches the ad
+    private float debounce; // prevents playing the reward function multiple times
 
+    private void Start() {
+        button = GetComponent<Button>();
+    }
     private void Initialize() {
         #if UNITY_IOS
             _adUnitID = iosadUnitID;
@@ -21,9 +28,12 @@ public class AdsRewardedButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
         #endif
 
         button = GetComponent<Button>();
-
         // disable the button until the ads are loaded
         button.interactable = false;
+    }
+
+    private void Update() {
+        debounce += Time.deltaTime;
     }
 
     public void LoadAd()
@@ -48,7 +58,7 @@ public class AdsRewardedButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
  
         if (adUnitID.Equals(_adUnitID))
         {
-            button.onClick.AddListener(ShowAd);
+            // button.onClick.AddListener(ShowAd);
             /// re-enable the button
             button.interactable = true;
         }
@@ -59,7 +69,11 @@ public class AdsRewardedButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
         if (adUnitID.Equals(_adUnitID) && showCompletionState.Equals(UnityAdsShowCompletionState.COMPLETED))
         {
             Debug.Log("Unity Ads Rewarded Ad Completed");
-            // grant a reward.
+            if (reward != null && debounce > 1){
+                debounce = 0;
+                reward();
+                LoadAd();
+            }
         }
     }
  
@@ -82,5 +96,23 @@ public class AdsRewardedButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
     {
         // clean up listeners
         button.onClick.RemoveAllListeners();
+    }
+}
+
+[CustomEditor(typeof(AdsRewardedButton))]
+public class AdsRewardedButtonEditor : Editor {
+    public override void OnInspectorGUI() {
+        AdsRewardedButton ads = (AdsRewardedButton)target;
+
+        base.OnInspectorGUI();
+
+        if (GUILayout.Button("Load Ad")){
+            ads.LoadAd();
+        }
+
+        if (GUILayout.Button("Show Ad")){
+            ads.ShowAd();
+        }
+        
     }
 }
