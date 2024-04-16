@@ -84,11 +84,15 @@ public class SudokuGrid : MonoBehaviour {
     private Action onScoreChange; // action that is called when the score is changed
     private Action onMistake; // action thats called when the player misplaces a number
 
-    public SudokuGrid(){}
+    public SudokuGrid(){
+        History.ResetMoves();
+    }
 
     public SudokuGrid(string partial, string full){
         this.partial = partial;
         this.full = full;
+
+        History.ResetMoves();
 
     }
 
@@ -146,13 +150,16 @@ public class SudokuGrid : MonoBehaviour {
         if (num == fullReference){
             data[x, y] = num;
             UpdateScore(true);
+            History.SaveMove(this);
             return 0;
         } else {
             mistakesLeft -= 1;
             onMistake();
             UpdateScore(false);
+            History.SaveMove(this);
             return 2;
         }
+
     }
 
     public void Draw(GameObject image, GameObject textReference){ // draws the grid onto an image, DON'T CALL OFTEN (MEMORY INTENSIVE)
