@@ -150,13 +150,13 @@ public class SudokuGrid : MonoBehaviour {
         if (num == fullReference){
             data[x, y] = num;
             UpdateScore(true);
-            History.SaveMove(this);
+            History.PushMove(this);
             return 0;
         } else {
             mistakesLeft -= 1;
             onMistake();
             UpdateScore(false);
-            History.SaveMove(this);
+            History.PushMove(this);
             return 2;
         }
 

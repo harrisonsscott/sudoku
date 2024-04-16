@@ -90,6 +90,13 @@ public class UI : MonoBehaviour
                 }
             }
         });
+
+        undoButton.GetComponent<Button>().onClick.AddListener(() => {
+            main.grid.data = History.PopMove();
+            // main.grid.data = new int[9,9];
+            sudoku.Draw();
+        });
+
         toggleThemeButton.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(() => {
             userPref.themeIndex = (userPref.themeIndex + 1) % themes.Count;
             SaveData.Save(main.grid, userPref);

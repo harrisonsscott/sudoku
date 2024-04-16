@@ -10,8 +10,19 @@ public static class History {
         moves = new List<int[,]>();
     }
 
-    public static void SaveMove(SudokuGrid grid){
-        moves.Add(grid.data);
-        Debug.Log(grid.data);
+    public static void PushMove(SudokuGrid grid){ // adds a move onto the stack
+        int[,] move =(int[,])grid.data.Clone();
+        moves.Add(move);
+
+        foreach (var element in moves){
+            Debug.Log(Data.SerializeArray(element));
+        }
+    }
+
+    public static int[,] PopMove(){ // removes the current move and returns it
+        int[,] move = moves[moves.Count - 1];
+        moves.RemoveAt(moves.Count - 1);
+        Debug.Log(Data.SerializeArray(move));
+        return move;
     }
 }
