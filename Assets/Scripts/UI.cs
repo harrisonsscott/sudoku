@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
 using Unity.Burst.Intrinsics;
+using System.Linq;
+using Unity.VisualScripting;
 
 // handles all the UI functions
 public class UI : MonoBehaviour
@@ -24,6 +26,8 @@ public class UI : MonoBehaviour
     public GameObject completedGameContainer; // container that displays when the user completes a sudoku grid
     public GameObject backButton; // button in the top of the screen during that lets you go back
     public GameObject hintButton;
+    public GameObject undoButton;
+    public GameObject notesButton;
     public Texture2D border; // image with a shadow that makes a border
     public TMP_Text timer; // text that displays the time in the game
     public TMP_Text score; // text that displays score
@@ -47,7 +51,7 @@ public class UI : MonoBehaviour
         userPref = SaveData.LoadPrefs() == null ? SaveData.LoadPrefs() : new UserPref();
         // set themes
         themes.Add(new("#ffffff", "#e6F2FA", "#ffffff", "#4c7c9c")); // light mode
-        themes.Add(new("#151521", "#212234", "#151521", "#ff7700")); // dark mode
+        themes.Add(new("#151521", "#212234", "#151521", "#0D597A")); // dark mode
 
         ApplyTheme();
 
@@ -140,7 +144,9 @@ public class UI : MonoBehaviour
         }
 
         if (full){
-            foreach(var element in FindObjectsByType<Button>(FindObjectsSortMode.None)){
+            sudoku.Draw();
+            foreach (var element in FindObjectsByType<Button>(FindObjectsSortMode.None))
+            {
                 // make text-less buttons that same color as the text
                 if (element.transform.childCount > 0){
                     if (!element.transform.GetChild(0).gameObject.HasComponent<TMP_Text>()){
@@ -154,6 +160,10 @@ public class UI : MonoBehaviour
                     element.color = theme.background.ToRGB();
                 }
             }
+
+            foreach(var element in new GameObject[]{hintButton, undoButton, notesButton}){
+                element.transform.GetChild(1).GetComponent<Image>().color = theme.text.ToRGB();
+            }
         }
 
 
@@ -161,7 +171,7 @@ public class UI : MonoBehaviour
         // make the toggle theme button's color to be the next theme
         toggleThemeButton.GetComponent<Image>().color = themes[(userPref.themeIndex + 1) % themes.Count].background.ToRGB();
         sudoku.highlightMaterial.color = theme.button.ToRGB();
-        sudoku.highlightMaterial2.color = Color.Lerp(theme.button.ToRGB(), new Color(0.7f, 0.7f, 0.7f, 1), 0.8f);
+        sudoku.highlightMaterial2.color = Color.Lerp(theme.button.ToRGB(), new Color(0.7f, 0.7f, 0.7f, 1), 0.9f);
     }
 
     private void SaveGame(){
