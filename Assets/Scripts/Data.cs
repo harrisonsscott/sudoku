@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using TMPro;
 using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 // color scheme for the ui
@@ -51,6 +52,7 @@ public class SudokuData {
     public string partial;
     public string full;
     public int[,] dataArray;
+    public string notes;
     public string data;
     public int mistakesLeft;
     public float time; // in seconds
@@ -62,11 +64,12 @@ public class SudokuData {
         this.full = full;
     }
 
-    public SudokuData(string partial, string full, int[,] data){
+    public SudokuData(string partial, string full, int[,] data, bool[,,] noteData){
         this.partial = partial;
         this.full = full;
         this.dataArray = data;
         this.data = Data.SerializeArray(data);
+        this.notes = Data.SerializeNotes(noteData);
     }
 }
 
@@ -214,9 +217,6 @@ public class SudokuGrid : MonoBehaviour {
     }
 
     public void DrawAll(GameObject image, GameObject textReference){ // draws the grid onto an image, DON'T CALL OFTEN (MEMORY INTENSIVE)
-        for (int i = 0; i < 9; i++){
-            noteData[0,0,i] = true;
-        }
         // clear the previous text
         for (int i = 0; i < image.transform.childCount; i++){
             Destroy(image.transform.GetChild(i).gameObject);
@@ -297,9 +297,11 @@ public static class Data {
         PuzzleData data = JsonUtility.FromJson<PuzzleData>(json);
         int index = UnityEngine.Random.Range(0, data.puzzles.Length-1);
 
-        SudokuGrid grid = new SudokuGrid();
-        grid.partial = data.puzzles[index].partial;
-        grid.full = data.puzzles[index].full;
+        SudokuGrid grid = new SudokuGrid
+        {
+            partial = data.puzzles[index].partial,
+            full = data.puzzles[index].full
+        };
 
         grid.data = DecodeSudokuString(grid.partial);
 
@@ -319,14 +321,32 @@ public static class Data {
     }
 
     public static SudokuGrid dataToGrid(SudokuData data){ // converts a SudokuData to SudokuGrid
-        SudokuGrid grid = new SudokuGrid();
-        grid.partial = data.partial;
-        grid.full = data.full;
-        grid.data = DecodeSudokuString(data.data);
-        grid.mistakesLeft = data.mistakesLeft;
-        grid.time = data.time;
-        
+        SudokuGrid grid = new SudokuGrid
+        {
+            partial = data.partial,
+            full = data.full,
+            data = DecodeSudokuString(data.data),
+            noteData = DecodeNoteString(data.notes),
+            mistakesLeft = data.mistakesLeft,
+            time = data.time
+        };
+
         return grid;
+    }
+
+    private static bool[,,] DecodeNoteString(string notes)
+    {
+        bool[,,] data = new bool[GlobalConstants.gridX, GlobalConstants.gridY, 9];
+
+        for (int x = 0; x < GlobalConstants.gridX; x++){
+            for (int y = 0; y < GlobalConstants.gridY; y++){
+                for (int z = 0; z < GlobalConstants.gridY; z++){
+                    data[x, y, z] = notes[x * 81 + y * 9 + z] == '1' ? true : false;
+                }
+            }
+        } 
+
+        return data;
     }
 
     public static string SerializeArray(int[,] array){ // converts an array into a string for storing, ex: [1, 2, 5] -> "125"
@@ -338,6 +358,20 @@ public static class Data {
             }
         }
         
+        return str;
+    }
+
+    public static string SerializeNotes(bool[,,] notes){ // converts a 3d boolean array into a string for storing [true, false] -> 10
+        string str = "";
+
+        for (int x = 0; x < GlobalConstants.gridX; x++){
+            for (int y = 0; y < GlobalConstants.gridY; y++){
+                for (int z = 0; z < GlobalConstants.gridY; z++){
+                    str += notes[x, y, z] == true ? "1" : "0";
+                }
+            }
+        }
+
         return str;
     }
 

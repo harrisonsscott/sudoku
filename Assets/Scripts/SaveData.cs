@@ -30,7 +30,7 @@ public static class SaveData {
     // save data to persistent data path
     public static void Save(SudokuGrid grid, UserPref userPref){
 
-        SudokuData data = new SudokuData(grid.partial, grid.full, grid.data)
+        SudokuData data = new SudokuData(grid.partial, grid.full, grid.data, grid.noteData)
         {
             mistakesLeft = grid.mistakesLeft,
             time = grid.time
