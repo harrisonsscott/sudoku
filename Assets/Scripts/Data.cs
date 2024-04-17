@@ -266,7 +266,7 @@ public class SudokuGrid : MonoBehaviour {
     }
 
     // highs a part of the sudoku grid when the user clicks on it
-    public void Highlight(GameObject image, Vector2 pos, GameObject selectPanelX, GameObject selectPanelY, GameObject selectPanelZ, GameObject selectPanelW){ 
+    public void Highlight(GameObject image, Vector2 pos, GameObject selectPanelX, GameObject selectPanelY, GameObject selectPanelZ, GameObject selectPanelW){
         RectTransform rect = image.GetComponent<RectTransform>();
         selectPanelX.GetComponent<RectTransform>().sizeDelta = new Vector2(rect.sizeDelta.x, rect.sizeDelta.y/GlobalConstants.gridY);
         selectPanelY.GetComponent<RectTransform>().sizeDelta = new Vector2(rect.sizeDelta.x/GlobalConstants.gridX, rect.sizeDelta.y);

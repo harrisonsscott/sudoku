@@ -34,6 +34,7 @@ public class UI : MonoBehaviour
     [Header("Other")]
     public TMP_FontAsset font; // applied to all text objects at runtime
     public AdsInitializer ads;
+    public AdsInterstitial ads2;
     public AdsBanner adsBanner;
     public Sudoku sudoku;
     public Main main;
@@ -182,7 +183,8 @@ public class UI : MonoBehaviour
         // make the toggle theme button's color to be the next theme
         toggleThemeButton.GetComponent<Image>().color = themes[(userPref.themeIndex + 1) % themes.Count].background.ToRGB();
         sudoku.highlightMaterial.color = theme.button.ToRGB();
-        sudoku.highlightMaterial2.color = Color.Lerp(theme.button.ToRGB(), new Color(0.7f, 0.7f, 0.7f, 1), 0.9f);
+        sudoku.highlightMaterial2.color = theme.text2.ToRGB();
+        // sudoku.highlightMaterial2.color = Color.Lerp(theme.button.ToRGB(), new Color(0.7f, 0.7f, 0.7f, 1), 0.9f);
     }
 
     private void SaveGame(){
@@ -249,6 +251,7 @@ public class UI : MonoBehaviour
 
     public void LeaveGame(){
         isInGame = false;
+        ads2.LoadAd();
         if (endGameContainer.activeSelf){ // player made too many mistakes
             SaveData.WipeGridData();
             endGameContainer.GetComponent<Modal>().Close(0.1f);
@@ -264,6 +267,7 @@ public class UI : MonoBehaviour
         }
 
         TransitionScene(gameScene, homeScene);
+        ads2.ShowAd();
         adsBanner.HideBannerAd();
     }
 
