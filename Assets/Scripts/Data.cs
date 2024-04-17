@@ -147,16 +147,15 @@ public class SudokuGrid : MonoBehaviour {
         }
         int fullReference = full[y*GlobalConstants.gridY+x] - '0';
 
+        History.PushMove(this);
         if (num == fullReference){
             data[x, y] = num;
             UpdateScore(true);
-            History.PushMove(this);
             return 0;
         } else {
             mistakesLeft -= 1;
             onMistake();
             UpdateScore(false);
-            History.PushMove(this);
             return 2;
         }
 

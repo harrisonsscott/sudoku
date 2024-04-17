@@ -15,14 +15,14 @@ public static class History {
         moves.Add(move);
 
         foreach (var element in moves){
-            Debug.Log(Data.SerializeArray(element));
+            Debug.Log($"Pushed {Data.SerializeArray(element)}");
         }
     }
 
     public static int[,] PopMove(){ // removes the current move and returns it
         int[,] move = moves[moves.Count - 1];
         moves.RemoveAt(moves.Count - 1);
-        Debug.Log(Data.SerializeArray(move));
+        Debug.Log($"Popped {Data.SerializeArray(move)}");
         return move;
     }
 }
