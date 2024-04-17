@@ -179,6 +179,9 @@ public class SudokuGrid : MonoBehaviour {
             text.text = "";
             return;
         }
+        for (int i = 0; i < textGO.transform.childCount; i++){
+            Destroy(textGO.transform.GetChild(i).gameObject);
+        }
         text.text = data[pos.x, pos.y] + "";
     }  
 
