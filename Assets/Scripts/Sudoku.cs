@@ -63,11 +63,11 @@ public class Sudoku : MonoBehaviour, IPointerClickHandler
     }
 
     public void Draw(Vector2Int pos){
-        main.grid.Draw(gameObject, pos);
+        main.grid.Draw(gameObject, textReference, pos);
     }
 
     public void Draw(Vector2 pos){
-        main.grid.Draw(gameObject, new Vector2Int((int)pos.x, (int)pos.y));
+        main.grid.Draw(gameObject, textReference, new Vector2Int((int)pos.x, (int)pos.y));
     }
 
     public void Highlight(Vector2 pos){

@@ -75,6 +75,7 @@ public class SudokuGrid : MonoBehaviour {
     public string partial; // encoded partially completed sudoku grid for reference
     public string full; // encoded completed sudoku grid for reference
     public int[,] data = new int[GlobalConstants.gridX, GlobalConstants.gridY];
+    public bool[,,] noteData = new bool[GlobalConstants.gridX, GlobalConstants.gridY, 9]; // each place has 9 bools representing notes
     public int mistakesLeft = 3;
     public int score;
     public int combo; // amount of times the user has correctly placed a number in a row, gives more score
@@ -160,19 +161,47 @@ public class SudokuGrid : MonoBehaviour {
         }
     }
 
-    public void Draw(GameObject image, Vector2Int pos){ // DrawAll for one text object
+    public void Draw(GameObject image, GameObject textReference, Vector2Int pos){ // DrawAll for one text object
         GameObject textGO = image.transform.GetChild(pos.x * 9 + pos.y).gameObject;
         TMP_Text text = textGO.GetComponent<TMP_Text>();
 
-        textGO.SetActive(false);
+        textGO.SetActive(true);
         text.text = data[pos.x, pos.y] + "";
+
+        DrawNotes(image, textReference, pos);
     }  
 
-    public void Draw(GameObject image, int x, int y){
-        Draw(image, new Vector2Int(x, y));
+    public void Draw(GameObject image, GameObject textReference, int x, int y){
+        Draw(image, textReference, new Vector2Int(x, y));
+    }
+
+    public void DrawNotes(GameObject image, GameObject textReference, Vector2Int position){
+        for (int z = 0; z < 9; z++){
+            if (noteData[position.x, position.y, z]){
+                GameObject noteGO = Instantiate(textReference);
+                TMP_Text noteText = noteGO.GetComponent<TMP_Text>();
+
+                        // set note position
+                Vector2 pos = new Vector2(z % 3, z / 3) - new Vector2(1, 1);
+                pos *= noteGO.GetComponent<RectTransform>().sizeDelta / 3f;
+                pos.y *= -1;
+
+                noteText.text = z + 1 + "";
+                noteText.fontSize = textReference.GetComponent<TMP_Text>().fontSize / 3f;
+
+                noteGO.transform.SetParent(image.transform.GetChild(0).transform);
+                // noteGO.transform.SetParent(image.transform);        
+                
+                noteGO.GetComponent<RectTransform>().sizeDelta /= 3f;
+                noteGO.GetComponent<RectTransform>().localPosition = pos;
+            }
+        }
     }
 
     public void DrawAll(GameObject image, GameObject textReference){ // draws the grid onto an image, DON'T CALL OFTEN (MEMORY INTENSIVE)
+        for (int i = 0; i < 9; i++){
+            noteData[0,0,i] = true;
+        }
         // clear the previous text
         for (int i = 0; i < image.transform.childCount; i++){
             Destroy(image.transform.GetChild(i).gameObject);
@@ -204,6 +233,27 @@ public class SudokuGrid : MonoBehaviour {
                     textGO.SetActive(false);
                 else 
                     textGO.SetActive(true);
+
+                // for notes
+                // for (int z = 0; z < 9; z++){
+                //     if (noteData[x, y, z]){
+                //         GameObject noteGO = Instantiate(textReference);
+                //         TMP_Text noteText = noteGO.GetComponent<TMP_Text>();
+
+                //         // set note position
+                //         Vector2 pos = new Vector2(z % 3, z / 3) - new Vector2(1, 1);
+                //         pos *= noteGO.GetComponent<RectTransform>().sizeDelta / 3f;
+                //         pos.y *= -1;
+
+                //         noteText.text = z + "";
+                //         noteText.fontSize = text.fontSize / 3f;
+
+                //         noteGO.transform.SetParent(textGO.transform);
+                        
+                //         noteGO.GetComponent<RectTransform>().sizeDelta /= 3f;
+                //         noteGO.GetComponent<RectTransform>().localPosition = pos;
+                //     }
+                // }
             }
         }
     }
