@@ -99,6 +99,7 @@ public class AdsRewardedButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
     }
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(AdsRewardedButton))]
 public class AdsRewardedButtonEditor : Editor {
     public override void OnInspectorGUI() {
@@ -116,3 +117,4 @@ public class AdsRewardedButtonEditor : Editor {
         
     }
 }
+#endif
