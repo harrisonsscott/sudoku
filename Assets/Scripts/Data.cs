@@ -1,8 +1,5 @@
 using System;
-using System.Globalization;
 using TMPro;
-using Unity.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 // color scheme for the ui
@@ -246,7 +243,7 @@ public class SudokuGrid : MonoBehaviour {
                 textGO.SetActive(true);
 
                 for (int z = 0; z < 9; z++){
-                    if (noteData[x, y, z]){
+                    if (noteData[x, y, z] && data[x, y] == 0){
                         GameObject noteGO = Instantiate(textReference);
                         TMP_Text noteText = noteGO.GetComponent<TMP_Text>();
 

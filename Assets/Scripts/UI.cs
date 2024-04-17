@@ -5,9 +5,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
-using Unity.Burst.Intrinsics;
-using System.Linq;
-using Unity.VisualScripting;
 
 // handles all the UI functions
 public class UI : MonoBehaviour
