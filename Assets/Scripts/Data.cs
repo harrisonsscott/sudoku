@@ -158,10 +158,21 @@ public class SudokuGrid : MonoBehaviour {
             UpdateScore(false);
             return 2;
         }
-
     }
 
-    public void Draw(GameObject image, GameObject textReference){ // draws the grid onto an image, DON'T CALL OFTEN (MEMORY INTENSIVE)
+    public void Draw(GameObject image, Vector2Int pos){ // DrawAll for one text object
+        GameObject textGO = image.transform.GetChild(pos.x * 9 + pos.y).gameObject;
+        TMP_Text text = textGO.GetComponent<TMP_Text>();
+
+        textGO.SetActive(false);
+        text.text = data[pos.x, pos.y] + "";
+    }  
+
+    public void Draw(GameObject image, int x, int y){
+        Draw(image, new Vector2Int(x, y));
+    }
+
+    public void DrawAll(GameObject image, GameObject textReference){ // draws the grid onto an image, DON'T CALL OFTEN (MEMORY INTENSIVE)
         // clear the previous text
         for (int i = 0; i < image.transform.childCount; i++){
             Destroy(image.transform.GetChild(i).gameObject);

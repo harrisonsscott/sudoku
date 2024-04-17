@@ -84,7 +84,7 @@ public class UI : MonoBehaviour
                 Vector2Int pos = new(UnityEngine.Random.Range(0, 9), UnityEngine.Random.Range(0, 9));
                 if (main.grid.data[pos.x, pos.y] == 0){
                     main.grid.data[pos.x, pos.y] = main.grid.full[pos.y * GlobalConstants.gridY + pos.x] - '0';
-                    sudoku.Draw();
+                    sudoku.DrawAll();
                     sudoku.Highlight(pos);
                     break;
                 }
@@ -94,7 +94,7 @@ public class UI : MonoBehaviour
         undoButton.GetComponent<Button>().onClick.AddListener(() => {
             main.grid.data = History.PopMove();
             // main.grid.data = new int[9,9];
-            sudoku.Draw();
+            sudoku.DrawAll();
         });
 
         toggleThemeButton.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(() => {
@@ -118,7 +118,8 @@ public class UI : MonoBehaviour
             int index2 = index;
             element.GetComponent<Button>().onClick.AddListener(() => {
                 main.grid.Place(index2);
-                sudoku.Draw();
+                // sudoku.DrawAll();
+                sudoku.Draw(main.grid.position);
             });
             index += 1;
         }
@@ -151,7 +152,7 @@ public class UI : MonoBehaviour
         }
 
         if (full){
-            sudoku.Draw();
+            sudoku.DrawAll();
             foreach (var element in FindObjectsByType<Button>(FindObjectsSortMode.None))
             {
                 // make text-less buttons that same color as the text
@@ -233,7 +234,7 @@ public class UI : MonoBehaviour
             main.grid = Data.GetSudokuGrid(main.difficulties[difficulty]);
         }
         
-        main.grid.Draw(sudoku.gameObject, sudoku.textReference);
+        main.grid.DrawAll(sudoku.gameObject, sudoku.textReference);
         main.grid.OnScoreChange(OnScoreChange);
         main.grid.OnMistake(() => OnMistake(false));
         SaveData.Save(main.grid, userPref);

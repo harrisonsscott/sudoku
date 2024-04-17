@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using Unity.Profiling;
 
 public class Sudoku : MonoBehaviour, IPointerClickHandler
 {
@@ -57,8 +58,16 @@ public class Sudoku : MonoBehaviour, IPointerClickHandler
         highlightW.transform.SetSiblingIndex(highlightX.transform.GetSiblingIndex());
     }
 
-    public void Draw(){
-        main.grid.Draw(gameObject, textReference); // draw the grid data onto the image
+    public void DrawAll(){
+        main.grid.DrawAll(gameObject, textReference); // draw the grid data onto the image
+    }
+
+    public void Draw(Vector2Int pos){
+        main.grid.Draw(gameObject, pos);
+    }
+
+    public void Draw(Vector2 pos){
+        main.grid.Draw(gameObject, new Vector2Int((int)pos.x, (int)pos.y));
     }
 
     public void Highlight(Vector2 pos){
@@ -80,7 +89,7 @@ public class Sudoku : MonoBehaviour, IPointerClickHandler
 
             // main.grid.Place(gridPosition, number);
             main.grid.position = gridPosition;
-            Draw();
+            // DrawAll();
             main.grid.Highlight(gameObject, gridPosition, highlightX, highlightY, highlightZ, highlightW);
         }
     }
