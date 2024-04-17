@@ -81,6 +81,7 @@ public class SudokuGrid : MonoBehaviour {
     public int combo; // amount of times the user has correctly placed a number in a row, gives more score
     public float time; // time since the game started
     public Vector2 position; // part that the user has currently selected
+    public bool noteMode;
 
     private Action onScoreChange; // action that is called when the score is changed
     private Action onMistake; // action thats called when the player misplaces a number
@@ -138,10 +139,16 @@ public class SudokuGrid : MonoBehaviour {
     0 - Valid
     1 - Number already placed on that area
     2 - Incorrect
+    3 - Valid (Note)
     */
     public int Place(int num){
         int x = (int)position.x;
         int y = (int)position.y;
+
+        if (noteMode){
+            noteData[x, y, num - 1] = !noteData[x, y, num - 1];
+            return 3;
+        }
 
         if (data[x, y] != 0){
             return 1;
@@ -166,9 +173,13 @@ public class SudokuGrid : MonoBehaviour {
         TMP_Text text = textGO.GetComponent<TMP_Text>();
 
         textGO.SetActive(true);
+        if (data[pos.x, pos.y] == 0){
+            // DrawNotes(image, textReference, pos);
+            DrawAll(image, textReference);
+            text.text = "";
+            return;
+        }
         text.text = data[pos.x, pos.y] + "";
-
-        DrawNotes(image, textReference, pos);
     }  
 
     public void Draw(GameObject image, GameObject textReference, int x, int y){
@@ -178,6 +189,7 @@ public class SudokuGrid : MonoBehaviour {
     public void DrawNotes(GameObject image, GameObject textReference, Vector2Int position){
         for (int z = 0; z < 9; z++){
             if (noteData[position.x, position.y, z]){
+                Debug.Log(noteData[position.x, position.y, z]);
                 GameObject noteGO = Instantiate(textReference);
                 TMP_Text noteText = noteGO.GetComponent<TMP_Text>();
 
@@ -227,33 +239,28 @@ public class SudokuGrid : MonoBehaviour {
                 textGO.transform.SetParent(image.transform);
 
                 textGO.GetComponent<RectTransform>().localPosition = new Vector2(gridSize.x*x, -gridSize.y*y) - new Vector2(rect.sizeDelta.x/2, -rect.sizeDelta.y/2) + new Vector2(gridSize.x, -gridSize.y)/2;
-                // textGO.GetComponent<RectTransform>().localPosition = -(new Vector2(gridSize.x*x, -gridSize.y*y) - new Vector2(rect.sizeDelta.x/2, rect.sizeDelta.y/2) + gridSize/2);
-                text.text = data[x,y] + "";
-                if (data[x,y] == 0)
-                    textGO.SetActive(false);
-                else 
-                    textGO.SetActive(true);
+                text.text = data[x,y] != 0 ? data[x, y] + "" : ""; // set text to grid data
+                textGO.SetActive(true);
 
-                // for notes
-                // for (int z = 0; z < 9; z++){
-                //     if (noteData[x, y, z]){
-                //         GameObject noteGO = Instantiate(textReference);
-                //         TMP_Text noteText = noteGO.GetComponent<TMP_Text>();
+                for (int z = 0; z < 9; z++){
+                    if (noteData[x, y, z]){
+                        GameObject noteGO = Instantiate(textReference);
+                        TMP_Text noteText = noteGO.GetComponent<TMP_Text>();
 
-                //         // set note position
-                //         Vector2 pos = new Vector2(z % 3, z / 3) - new Vector2(1, 1);
-                //         pos *= noteGO.GetComponent<RectTransform>().sizeDelta / 3f;
-                //         pos.y *= -1;
+                        // set note position
+                        Vector2 pos = new Vector2(z % 3, z / 3) - new Vector2(1, 1);
+                        pos *= noteGO.GetComponent<RectTransform>().sizeDelta / 3f;
+                        pos.y *= -1;
 
-                //         noteText.text = z + "";
-                //         noteText.fontSize = text.fontSize / 3f;
+                        noteText.text = z + 1 + "";
+                        noteText.fontSize = text.fontSize / 3f;
 
-                //         noteGO.transform.SetParent(textGO.transform);
+                        noteGO.transform.SetParent(textGO.transform);
                         
-                //         noteGO.GetComponent<RectTransform>().sizeDelta /= 3f;
-                //         noteGO.GetComponent<RectTransform>().localPosition = pos;
-                //     }
-                // }
+                        noteGO.GetComponent<RectTransform>().sizeDelta /= 3f;
+                        noteGO.GetComponent<RectTransform>().localPosition = pos;
+                    }
+                }
             }
         }
     }

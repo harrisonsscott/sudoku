@@ -33,6 +33,7 @@ public class UI : MonoBehaviour
     public TMP_Text score; // text that displays score
     public GameObject[] difficultyButtons; // the easy, medium, etc buttons when you're making a new game
     public List<GameObject> numberButtons; // the buttons that let you change the number to place
+
     [Header("Other")]
     public TMP_FontAsset font; // applied to all text objects at runtime
     public AdsInitializer ads;
@@ -101,6 +102,9 @@ public class UI : MonoBehaviour
             userPref.themeIndex = (userPref.themeIndex + 1) % themes.Count;
             SaveData.Save(main.grid, userPref);
             ApplyTheme(true);
+        });
+        notesButton.GetComponent<Button>().onClick.AddListener(() => {
+            main.grid.noteMode = !main.grid.noteMode;
         });
         // create a new grid and transition to it
         int index = 0;
