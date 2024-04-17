@@ -103,8 +103,10 @@ public class UI : MonoBehaviour
             SaveData.Save(main.grid, userPref);
             ApplyTheme(true);
         });
+
         notesButton.GetComponent<Button>().onClick.AddListener(() => {
             main.grid.noteMode = !main.grid.noteMode;
+            notesButton.transform.GetChild(2).GetComponent<TMP_Text>().text = main.grid.noteMode ? "ON" : "OFF";
         });
         // create a new grid and transition to it
         int index = 0;
