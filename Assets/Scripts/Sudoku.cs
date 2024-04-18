@@ -28,7 +28,7 @@ public class Sudoku : MonoBehaviour, IPointerClickHandler
         image.material = highlightMaterial;
 
         highlightX.transform.parent = FindAnyObjectByType<Sudoku>().transform.parent;
-        highlightX.transform.localPosition = new Vector3(0, -1000, 0);
+        highlightX.transform.localPosition = new Vector3(0, -10000, 0);
         highlightX.transform.localScale = new Vector3(1,1,1);
         highlightX.AddComponent<RectTransform>();
         
