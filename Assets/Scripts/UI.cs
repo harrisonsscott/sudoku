@@ -142,7 +142,7 @@ public class UI : MonoBehaviour
         header.GetComponent<Image>().color = theme.background.ToRGB();
 
         // update text and button color
-        foreach (var element in FindObjectsByType<TMP_Text>(FindObjectsSortMode.None)){
+        foreach (var element in FindObjectsByType<TMP_Text>(FindObjectsInactive.Include, FindObjectsSortMode.None)){
             Transform parent = element.transform.parent;
             if (element.color != theme.text2.ToRGB())
                 element.color = Data.Grayscale(Data.Invert(theme.background.ToRGB()));
@@ -157,7 +157,7 @@ public class UI : MonoBehaviour
 
         if (full){
             sudoku.DrawAll();
-            foreach (var element in FindObjectsByType<Button>(FindObjectsSortMode.None))
+            foreach (var element in FindObjectsByType<Button>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
                 // make text-less buttons that same color as the text
                 if (element.transform.childCount > 0){
@@ -167,7 +167,7 @@ public class UI : MonoBehaviour
                 }
             }
 
-            foreach(var element in FindObjectsByType<RawImage>(FindObjectsSortMode.None)){
+            foreach(var element in FindObjectsByType<RawImage>(FindObjectsInactive.Include, FindObjectsSortMode.None)){
                 if (element.texture == border){
                     element.color = theme.background.ToRGB();
                 }
@@ -178,6 +178,8 @@ public class UI : MonoBehaviour
             }
         }
 
+        endGameContainer.GetComponent<Modal>().ApplyTheme(theme);
+        completedGameContainer.GetComponent<Modal>().ApplyTheme(theme);
 
         backButton.GetComponent<RawImage>().color = theme.text.ToRGB();
         // make the toggle theme button's color to be the next theme
@@ -250,6 +252,7 @@ public class UI : MonoBehaviour
     }
 
     public void LeaveGame(){
+        continueButton.GetComponent<Button>().interactable = true;
         isInGame = false;
         ads2.LoadAd();
         if (endGameContainer.activeSelf){ // player made too many mistakes

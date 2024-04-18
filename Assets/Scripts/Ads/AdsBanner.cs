@@ -23,6 +23,7 @@ public class AdsBanner : MonoBehaviour
     }
     public void LoadBanner()
     {
+        if (GlobalConstants.disableAds) return;
         BannerLoadOptions options = new BannerLoadOptions
         {
             loadCallback = OnBannerLoaded,
