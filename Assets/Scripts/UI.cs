@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
+using System.Xml.XPath;
 
 // handles all the UI functions
 public class UI : MonoBehaviour
@@ -17,6 +18,7 @@ public class UI : MonoBehaviour
     public GameObject homeScene;
     public GameObject newGameScene;
     public GameObject gameScene;
+    public GameObject navigator; // CONTENT of the bottom of the the home scene
     public GameObject sudokuGrid;
     public GameObject heartContainer; // container with 3 hearts above the sudoku board
     public GameObject endGameContainer; // container that displays when the game ends
@@ -206,6 +208,8 @@ public class UI : MonoBehaviour
                 completedGameContainer.transform.GetChild(1).GetComponent<TMP_Text>().text = $"You finished in \n{FormatTime(main.grid.time)}!";
                 Fade(0.5f, () => completedGameContainer.GetComponent<Modal>().Open(0.1f));
             }
+        } else {
+            
         }
     }
 
@@ -235,6 +239,8 @@ public class UI : MonoBehaviour
     }
 
     public void StartGame(int difficulty, SudokuData data=null){
+        navigator.transform.parent.gameObject.SetActive(false);
+
         OnMistake(true); // refresh the hearts
         if (data != null){
             main.grid = Data.dataToGrid(data);
@@ -253,6 +259,7 @@ public class UI : MonoBehaviour
     }
 
     public void LeaveGame(){
+        navigator.transform.parent.gameObject.SetActive(true);
         continueButton.GetComponent<Button>().interactable = true;
         isInGame = false;
         ads2.LoadAd();
