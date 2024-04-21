@@ -49,10 +49,10 @@ public class UI : MonoBehaviour
     private void Start() {
         userPref = SaveData.LoadPrefs() == null ? SaveData.LoadPrefs() : new UserPref();
         // set themes
-        themes.Add(new("#ffffff", "#e6F2FA", "#ffffff", "#4c7c9c")); // light mode
+        themes.Add(new("#ffffff", "#E0F2FE", "#ffffff", "#4c7c9c")); // light mode
         themes.Add(new("#151521", "#212234", "#151521", "#0D597A")); // dark mode
-
-        ApplyTheme();
+        themes.Add(new("FFF2B8", "F3DCA1", "FFF2B8", "#6ABC78")); // sandy mode
+        ApplyTheme(true);
 
         // show the home scene during the start of the game
         header.transform.parent.gameObject.SetActive(false);
