@@ -30,6 +30,7 @@ public class AdsRewardedButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
         button = GetComponent<Button>();
         // disable the button until the ads are loaded
         button.interactable = false;
+        LoadAd();
     }
 
     private void Update() {
