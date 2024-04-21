@@ -55,6 +55,7 @@ public class UI : MonoBehaviour
         ApplyTheme();
 
         // show the home scene during the start of the game
+        header.transform.parent.gameObject.SetActive(false);
         homeScene.SetActive(true);
         foreach (var element in new GameObject[]{newGameScene, gameScene, fadeGameObject}){
            element.SetActive(false);
@@ -346,9 +347,15 @@ public class UI : MonoBehaviour
 
         LeanTween.moveLocal(from, new Vector3(-fromRect.rect.width, 0, 0), transitionTime).setOnComplete(() => {
             from.SetActive(false);
+            if (from == gameScene){
+                header.transform.parent.gameObject.SetActive(false);
+            }
         });
 
         to.SetActive(true);
+        if (to == gameScene){
+            header.transform.parent.gameObject.SetActive(true);
+        }
         toRect.localPosition = new Vector3(toRect.rect.width, 0, 0);
         LeanTween.moveLocal(to, Vector3.zero, transitionTime);
         ApplyTheme(true);
