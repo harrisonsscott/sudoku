@@ -6,7 +6,7 @@ public class Main : MonoBehaviour
     public SudokuGrid grid;
     public string path;
 
-    private void Start() {
+    private void Awake() {
         grid = Data.GetSudokuGrid(difficulties[0]);
         grid.Log();
     }

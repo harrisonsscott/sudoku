@@ -18,6 +18,7 @@ public class UI : MonoBehaviour
     public GameObject homeScene;
     public GameObject newGameScene;
     public GameObject gameScene;
+    public GameObject currentScene; // set automatically
     public GameObject navigator; // CONTENT of the bottom of the the home scene
     public GameObject sudokuGrid;
     public GameObject heartContainer; // container with 3 hearts above the sudoku board
@@ -48,7 +49,9 @@ public class UI : MonoBehaviour
     [Header("Theme")]
     public List<Theme> themes;
     public GameObject toggleThemeButton; // button in the top right corner that lets you swap themes
-    private void Start() {
+    private void Awake() {
+        currentScene = homeScene;
+
         userPref = SaveData.LoadPrefs() == null ? SaveData.LoadPrefs() : new UserPref();
         // set themes
         themes.Add(new("#ffffff", "#E0F2FE", "#ffffff", "#4c7c9c")); // light mode
@@ -359,6 +362,7 @@ public class UI : MonoBehaviour
             }
         });
 
+        currentScene = to;
         to.SetActive(true);
         if (to == gameScene){
             header.transform.parent.gameObject.SetActive(true);

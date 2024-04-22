@@ -19,7 +19,7 @@ public class Sudoku : MonoBehaviour, IPointerClickHandler
     private GameObject highlightZ; // highlights the current section
     private GameObject highlightW; // highlight the exact location more
 
-    private void Start() {
+    private void Awake() {
         highlightX = new GameObject("highlightX");
 
         Image image = highlightX.AddComponent<Image>();
