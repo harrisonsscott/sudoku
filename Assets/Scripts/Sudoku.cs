@@ -27,7 +27,7 @@ public class Sudoku : MonoBehaviour, IPointerClickHandler
         image.raycastTarget = false;
         image.material = highlightMaterial;
 
-        highlightX.transform.parent = FindAnyObjectByType<Sudoku>().transform.parent;
+        highlightX.transform.SetParent(FindAnyObjectByType<Sudoku>().transform.parent);
         highlightX.transform.localPosition = new Vector3(0, -10000, 0);
         highlightX.transform.localScale = new Vector3(1,1,1);
         highlightX.AddComponent<RectTransform>();
@@ -37,21 +37,21 @@ public class Sudoku : MonoBehaviour, IPointerClickHandler
         button.enabled = false;
 
         GameObject child = Instantiate(textReference); // not used, for themes
-        child.transform.parent = highlightX.transform;
+        child.transform.SetParent(highlightX.transform);
         child.GetComponent<TMP_Text>().text = "";
 
         highlightY = Instantiate(highlightX);
-        highlightY.transform.parent = highlightX.transform.parent;
+        highlightY.transform.SetParent(highlightX.transform.parent);
         highlightY.transform.localScale = new Vector3(1,1,1);
         highlightY.name = "highlightY";
 
         highlightZ = Instantiate(highlightX);
-        highlightZ.transform.parent = highlightX.transform.parent;
+        highlightZ.transform.SetParent(highlightX.transform.parent);
         highlightZ.transform.localScale = new Vector3(1,1,1);
         highlightZ.name = "highlightZ";
 
         highlightW = Instantiate(highlightX);
-        highlightW.transform.parent = highlightX.transform.parent;
+        highlightW.transform.SetParent(highlightX.transform.parent);
         highlightW.transform.localScale = new Vector3(1,1,1);
         highlightW.name = "highlightW";
         highlightW.GetComponent<Image>().material = highlightMaterial2;
