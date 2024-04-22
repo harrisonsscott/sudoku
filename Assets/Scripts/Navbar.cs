@@ -9,8 +9,9 @@ using UnityEngine.UI;
 
 public class Navbar : MonoBehaviour
 {
-    List<Button> buttons;
+    public List<Button> buttons; // set automatically
     public List<GameObject> scenes; // scenes that correspond to the buttons
+    public Button currentButton; // button that is currently selected
 
     private UI ui;
 
@@ -40,21 +41,25 @@ public class Navbar : MonoBehaviour
     }
 
     public void Select(Button button){ // colors ones of the buttons when it's clicked
+        currentButton = button;
+        Theme theme = ui.themes[ui.userPref.themeIndex];
+
         // color all the other buttons gray
         foreach (Button element in buttons){
-            element.transform.parent.GetChild(0).GetComponent<RawImage>().color = Color.gray;
+            element.transform.parent.GetChild(0).GetComponent<RawImage>().color = theme.text.ToRGB();
             // parent.GetChild(1).GetComponent<TMP_Text>().color  = Color.gray;
         }
 
         // color the selected button
-        Color color = ui.themes[ui.userPref.themeIndex].button.ToRGB();
-        button.transform.parent.GetChild(0).GetComponent<RawImage>().color = color;
+        Color color = theme.button.ToRGB();
+        button.transform.parent.GetChild(0).GetComponent<RawImage>().color = theme.text2.ToRGB();
         // parent.GetChild(1).GetComponent<TMP_Text>().color = color;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        Color color = ui.themes[ui.userPref.themeIndex].background.ToRGB();
+        transform.GetComponent<Image>().color = color;
     }
 }

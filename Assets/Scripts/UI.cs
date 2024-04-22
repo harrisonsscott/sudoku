@@ -182,6 +182,11 @@ public class UI : MonoBehaviour
             foreach(var element in new GameObject[]{hintButton, undoButton, notesButton}){
                 element.transform.GetChild(1).GetComponent<Image>().color = theme.text.ToRGB();
             }
+
+            foreach(var element in FindObjectsByType<Navbar>(FindObjectsInactive.Include, FindObjectsSortMode.None)){
+                if (element.buttons.Count > 0)
+                    element.Select(element.currentButton == null ? element.buttons[0] : element.currentButton);
+            }
         }
 
         endGameContainer.GetComponent<Modal>().ApplyTheme(theme);
