@@ -31,7 +31,7 @@ public class UI : MonoBehaviour
     public Texture2D border; // image with a shadow that makes a border
     public TMP_Text timer; // text that displays the time in the game
     public TMP_Text score; // text that displays score
-    public GameObject[] difficultyButtons; // the easy, medium, etc buttons when you're making a new game
+    public List<GameObject> difficultyButtons; // the easy, medium, etc buttons when you're making a new game
     public List<GameObject> numberButtons; // the buttons that let you change the number to place
 
     [Header("Other")]
@@ -51,6 +51,7 @@ public class UI : MonoBehaviour
     public GameObject toggleThemeButton; // button in the top right corner that lets you swap themes
     private void Awake() {
         currentScene = homeScene;
+        navigator.SetActive(true);
 
         userPref = SaveData.LoadPrefs() == null ? SaveData.LoadPrefs() : new UserPref();
         // set themes
@@ -112,6 +113,15 @@ public class UI : MonoBehaviour
             main.grid.noteMode = !main.grid.noteMode;
             notesButton.transform.GetChild(2).GetComponent<TMP_Text>().text = main.grid.noteMode ? "ON" : "OFF";
         });
+
+        // random difficulty button
+        difficultyButtons[0].GetComponent<Button>().onClick.AddListener(() => {
+            TransitionScene(newGameScene, gameScene);
+            StartGame(UnityEngine.Random.Range(0, difficultyButtons.Count - 1));
+        });
+
+        difficultyButtons.RemoveAt(0);
+
         // create a new grid and transition to it
         int index = 0;
         foreach (var element in difficultyButtons){
@@ -247,6 +257,7 @@ public class UI : MonoBehaviour
     }
 
     public void StartGame(int difficulty, SudokuData data=null){
+        header.transform.parent.gameObject.SetActive(true);
         navigator.transform.parent.gameObject.SetActive(false);
 
         OnMistake(true); // refresh the hearts
@@ -268,6 +279,7 @@ public class UI : MonoBehaviour
 
     public void LeaveGame(){
         navigator.transform.parent.gameObject.SetActive(true);
+        header.transform.parent.gameObject.SetActive(false);
         continueButton.GetComponent<Button>().interactable = true;
         isInGame = false;
         ads2.LoadAd();
@@ -362,16 +374,10 @@ public class UI : MonoBehaviour
 
         LeanTween.moveLocal(from, new Vector3(-fromRect.rect.width, 0, 0), transitionTime).setOnComplete(() => {
             from.SetActive(false);
-            if (from == gameScene){
-                header.transform.parent.gameObject.SetActive(false);
-            }
         });
 
         currentScene = to;
         to.SetActive(true);
-        if (to == gameScene){
-            header.transform.parent.gameObject.SetActive(true);
-        }
         toRect.localPosition = new Vector3(toRect.rect.width, 0, 0);
         LeanTween.moveLocal(to, Vector3.zero, transitionTime);
         ApplyTheme(true);
