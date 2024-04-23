@@ -1,7 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +6,7 @@ using UnityEngine.UI;
 
 public class Navbar : MonoBehaviour
 {
-    public List<Button> buttons; // set automatically
+    [HideInInspector] public List<Button> buttons; // set automatically
     public List<GameObject> scenes; // scenes that correspond to the buttons
     public Button currentButton; // button that is currently selected
 
@@ -37,7 +34,6 @@ public class Navbar : MonoBehaviour
                 }
             });
         }
-
     }
 
     public void Select(Button button){ // colors ones of the buttons when it's clicked

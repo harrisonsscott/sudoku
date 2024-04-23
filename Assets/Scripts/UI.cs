@@ -5,7 +5,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
-using System.Xml.XPath;
 
 // handles all the UI functions
 public class UI : MonoBehaviour
@@ -18,6 +17,7 @@ public class UI : MonoBehaviour
     public GameObject homeScene;
     public GameObject newGameScene;
     public GameObject gameScene;
+    public GameObject statsScene;
     public GameObject currentScene; // set automatically
     public GameObject navigator; // CONTENT of the bottom of the the home scene
     public GameObject sudokuGrid;
@@ -51,7 +51,6 @@ public class UI : MonoBehaviour
     public GameObject toggleThemeButton; // button in the top right corner that lets you swap themes
     private void Awake() {
         currentScene = homeScene;
-        navigator.SetActive(true);
 
         userPref = SaveData.LoadPrefs() == null ? SaveData.LoadPrefs() : new UserPref();
         // set themes
@@ -63,7 +62,7 @@ public class UI : MonoBehaviour
         // show the home scene during the start of the game
         header.transform.parent.gameObject.SetActive(false);
         homeScene.SetActive(true);
-        foreach (var element in new GameObject[]{newGameScene, gameScene, fadeGameObject}){
+        foreach (var element in new GameObject[]{newGameScene, gameScene, fadeGameObject, statsScene}){
            element.SetActive(false);
         }
 
@@ -147,8 +146,14 @@ public class UI : MonoBehaviour
         foreach (var element in FindObjectsByType<TMP_Text>(FindObjectsInactive.Include, FindObjectsSortMode.None)){
             element.font = font;
         }
+        
+        
         InvokeRepeating("SaveGame", 2, 1);
         
+    }
+
+    private void Start() {
+        navigator.transform.parent.gameObject.SetActive(true);
     }
 
     public void ApplyTheme(bool full = false){ // set full to true during a new scene, uses more memory
