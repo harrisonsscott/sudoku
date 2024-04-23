@@ -17,7 +17,6 @@ public class UI : MonoBehaviour
     public GameObject homeScene;
     public GameObject newGameScene;
     public GameObject gameScene;
-    public GameObject statsScene;
     public GameObject currentScene; // set automatically
     public GameObject navigator; // CONTENT of the bottom of the the home scene
     public GameObject sudokuGrid;
@@ -33,6 +32,11 @@ public class UI : MonoBehaviour
     public TMP_Text score; // text that displays score
     public List<GameObject> difficultyButtons; // the easy, medium, etc buttons when you're making a new game
     public List<GameObject> numberButtons; // the buttons that let you change the number to place
+    [Header("Stats")]
+    public GameObject statsScene;
+    public List<GameObject> statButtons; // buttons that let you change what difficulty you're looking at
+    [HideInInspector] 
+    public List<GameObject> statsList; // list of elements in the stat menu, set automatically
 
     [Header("Other")]
     public TMP_FontAsset font; // applied to all text objects at runtime
@@ -143,8 +147,15 @@ public class UI : MonoBehaviour
             index += 1;
         }
 
+        // set font for all text objects
         foreach (var element in FindObjectsByType<TMP_Text>(FindObjectsInactive.Include, FindObjectsSortMode.None)){
             element.font = font;
+        }
+
+        // grab the list of stats
+        Transform statsListParent = statsScene.transform.Find("Scroll").GetChild(0);
+        for (int i = 0; i < statsListParent.childCount; i++){
+            statsList.Add(statsListParent.GetChild(i).gameObject);
         }
         
         
@@ -193,6 +204,15 @@ public class UI : MonoBehaviour
                     element.color = theme.background.ToRGB();
                 }
             }
+            
+            foreach(var element in FindObjectsByType<Image>(FindObjectsInactive.Include, FindObjectsSortMode.None)){
+                // for headers
+                Color color = theme.background.ToRGB();
+                color.a = element.color.a;
+                if (element.gameObject.name.ToLower() == "content"){
+                    element.color = color;
+                }
+            };
 
             foreach(var element in new GameObject[]{hintButton, undoButton, notesButton}){
                 element.transform.GetChild(1).GetComponent<Image>().color = theme.text.ToRGB();
@@ -201,6 +221,12 @@ public class UI : MonoBehaviour
             foreach(var element in FindObjectsByType<Navbar>(FindObjectsInactive.Include, FindObjectsSortMode.None)){
                 if (element.buttons.Count > 0)
                     element.Select(element.currentButton == null ? element.buttons[0] : element.currentButton);
+            }
+
+            // set stats list color
+            foreach(var stat in statsList){
+                stat.GetComponent<Image>().color = theme.background.ToRGB();
+                stat.transform.Find("Image").GetComponent<RawImage>().color = theme.text.ToRGB();
             }
         }
 
