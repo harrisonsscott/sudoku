@@ -53,7 +53,7 @@ public class UI : MonoBehaviour
     public UserPref userPref;
     public List<Stat> stats;
     public bool isInGame;
-    const float transitionTime = 1f;
+    const float transitionTime = 0.2f;
     private Color numberButtonsStartingColor; // their color at the start of the game
 
     [Header("Theme")]
@@ -165,7 +165,7 @@ public class UI : MonoBehaviour
         // stats menu
         statsList = new List<GameObject>();
         Stats statsClass = FindAnyObjectByType<Stats>(FindObjectsInactive.Include);
-        Transform statsListParent = statsScene.transform.Find("Scroll").GetChild(0);
+        Transform statsListParent = statsScene.transform.Find("Header").Find("Scroll").GetChild(0);
         for (int i = 0; i < statsListParent.childCount; i++){
             statsList.Add(statsListParent.GetChild(i).gameObject);
         }
@@ -186,9 +186,8 @@ public class UI : MonoBehaviour
                     copy.GetComponent<RectTransform>().position = original.GetComponent<RectTransform>().position;
                     original.GetComponent<RectTransform>().position += new Vector3(original.GetComponent<RectTransform>().sizeDelta.x, 0, 0);
 
-                    TransitionScene(copy, original, () => {
-                        Destroy(copy);
-                    });
+                    LeanTween.moveLocal(copy, new Vector3(-original.GetComponent<RectTransform>().sizeDelta.x, original.GetComponent<RectTransform>().localPosition.y, 0), transitionTime);
+                    LeanTween.moveLocal(original, new Vector3(0,original.GetComponent<RectTransform>().localPosition.y,0), transitionTime);
                 }
                 
             });
