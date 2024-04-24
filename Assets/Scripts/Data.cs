@@ -192,7 +192,6 @@ public class SudokuGrid : MonoBehaviour {
     public void DrawNotes(GameObject image, GameObject textReference, Vector2Int position){
         for (int z = 0; z < 9; z++){
             if (noteData[position.x, position.y, z]){
-                Debug.Log(noteData[position.x, position.y, z]);
                 GameObject noteGO = Instantiate(textReference);
                 TMP_Text noteText = noteGO.GetComponent<TMP_Text>();
 

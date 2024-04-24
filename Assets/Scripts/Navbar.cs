@@ -20,14 +20,12 @@ public class Navbar : MonoBehaviour
 
 
         for (int i = 0; i < transform.childCount; i++){
-            Debug.Log(transform.GetChild(i).GetChild(2).name);
             Button button = transform.GetChild(i).GetChild(2).GetComponent<Button>();
             if (i == 0)
                 Select(button);
             buttons.Add(button);
             button.onClick.AddListener(() => {
                 Select(button);
-
                 // transition to another scene when clicked
                 if (scenes[buttons.IndexOf(button)] != ui.currentScene){
                     ui.TransitionScene(ui.currentScene, scenes[buttons.IndexOf(button)]);

@@ -5,6 +5,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
+using UnityEngine.Jobs;
+using UnityEditorInternal;
+using Unity.VisualScripting;
+using System.Linq;
 
 // handles all the UI functions
 public class UI : MonoBehaviour
@@ -34,9 +38,10 @@ public class UI : MonoBehaviour
     public List<GameObject> numberButtons; // the buttons that let you change the number to place
     [Header("Stats")]
     public GameObject statsScene;
-    public List<GameObject> statButtons; // buttons that let you change what difficulty you're looking at
-    [HideInInspector] 
-    public List<GameObject> statsList; // list of elements in the stat menu, set automatically
+    public Transform statButtonsParent;
+    public int statDifficultyIndex;
+    [HideInInspector] public List<GameObject> statButtons; // buttons that let you change what difficulty you're looking at
+    [HideInInspector] public List<GameObject> statsList; // list of elements in the stat menu, set automatically
 
     [Header("Other")]
     public TMP_FontAsset font; // applied to all text objects at runtime
@@ -46,8 +51,9 @@ public class UI : MonoBehaviour
     public Sudoku sudoku;
     public Main main;
     public UserPref userPref;
+    public List<Stat> stats;
     public bool isInGame;
-    const float transitionTime = 0.1f;
+    const float transitionTime = 1f;
     private Color numberButtonsStartingColor; // their color at the start of the game
 
     [Header("Theme")]
@@ -56,7 +62,11 @@ public class UI : MonoBehaviour
     private void Awake() {
         currentScene = homeScene;
 
+        stats = SaveData.LoadStats().ToList();
         userPref = SaveData.LoadPrefs() == null ? SaveData.LoadPrefs() : new UserPref();
+
+        Debug.Log(stats[0].gamesPlayed);
+
         // set themes
         themes.Add(new("#ffffff", "#E0F2FE", "#ffffff", "#4c7c9c")); // light mode
         themes.Add(new("#151521", "#212234", "#151521", "#0D597A")); // dark mode
@@ -108,7 +118,7 @@ public class UI : MonoBehaviour
 
         toggleThemeButton.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(() => {
             userPref.themeIndex = (userPref.themeIndex + 1) % themes.Count;
-            SaveData.Save(main.grid, userPref);
+            SaveData.Save(main.grid, userPref, stats);
             ApplyTheme(true);
         });
 
@@ -152,12 +162,37 @@ public class UI : MonoBehaviour
             element.font = font;
         }
 
-        // grab the list of stats
+        // stats menu
+        statsList = new List<GameObject>();
+        Stats statsClass = FindAnyObjectByType<Stats>(FindObjectsInactive.Include);
         Transform statsListParent = statsScene.transform.Find("Scroll").GetChild(0);
         for (int i = 0; i < statsListParent.childCount; i++){
             statsList.Add(statsListParent.GetChild(i).gameObject);
         }
-        
+
+        for (int i = 0; i < statButtonsParent.childCount; i++){
+            int index2 = i;
+            statButtons.Add(statButtonsParent.GetChild(i).gameObject);
+            statButtonsParent.GetChild(i).GetComponent<Button>().onClick.AddListener(() => {
+                if (index2 != statDifficultyIndex){
+                    statDifficultyIndex = index2;
+                    statsClass.currentDifficultyIndex = index2;
+                    statsClass.Refresh();
+                    // create a copy of the stats for transitoning
+                    GameObject original = statsListParent.parent.gameObject;
+                    GameObject copy = Instantiate(original);
+
+                    copy.transform.parent = original.transform.parent;
+                    copy.GetComponent<RectTransform>().position = original.GetComponent<RectTransform>().position;
+                    original.GetComponent<RectTransform>().position += new Vector3(original.GetComponent<RectTransform>().sizeDelta.x, 0, 0);
+
+                    TransitionScene(copy, original, () => {
+                        Destroy(copy);
+                    });
+                }
+                
+            });
+        }
         
         InvokeRepeating("SaveGame", 2, 1);
         
@@ -243,7 +278,7 @@ public class UI : MonoBehaviour
 
     private void SaveGame(){
         if (isInGame){
-            SaveData.Save(main.grid, userPref);
+            SaveData.Save(main.grid, userPref, stats);
         }
     }
 
@@ -301,7 +336,7 @@ public class UI : MonoBehaviour
         main.grid.DrawAll(sudoku.gameObject, sudoku.textReference);
         main.grid.OnScoreChange(OnScoreChange);
         main.grid.OnMistake(() => OnMistake(false));
-        SaveData.Save(main.grid, userPref);
+        SaveData.Save(main.grid, userPref, stats);
         // ChangeNumber(1, numberButtons[0]);
         isInGame = true;
         adsBanner.LoadBanner();
@@ -399,19 +434,23 @@ public class UI : MonoBehaviour
         return FormatTime((int)timeInSeconds);
     }
 
-    public void TransitionScene(GameObject from, GameObject to){ // moves one scene off the screen and moves another to it
+    public void TransitionScene(GameObject from, GameObject to, Action onComplete){ // moves one scene off the screen and moves another to it, vertical position is offset by yValue
         RectTransform fromRect = from.GetComponent<RectTransform>();
         RectTransform toRect = to.GetComponent<RectTransform>();
 
-        LeanTween.moveLocal(from, new Vector3(-fromRect.rect.width, 0, 0), transitionTime).setOnComplete(() => {
+        LeanTween.moveLocal(from, new Vector3(-fromRect.rect.width, fromRect.localPosition.y, 0), transitionTime).setOnComplete(() => {
             from.SetActive(false);
         });
 
         currentScene = to;
         to.SetActive(true);
-        toRect.localPosition = new Vector3(toRect.rect.width, 0, 0);
-        LeanTween.moveLocal(to, Vector3.zero, transitionTime);
+        toRect.localPosition = new Vector3(toRect.rect.width, toRect.localPosition.y, 0);
+        LeanTween.moveLocal(to, new Vector3(0, toRect.localPosition.y, 0), transitionTime).setOnComplete(onComplete);
         ApplyTheme(true);
+    }
+
+    public void TransitionScene(GameObject from, GameObject to){
+        TransitionScene(from, to, () => {});
     }
 
     public void Wait(float time, Action action){ // waits a certain amount of time before executing an action
