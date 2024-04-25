@@ -79,6 +79,7 @@ public class SudokuGrid : MonoBehaviour {
     public int mistakesLeft = 3;
     public int score;
     public int combo; // amount of times the user has correctly placed a number in a row, gives more score
+    public int difficulty;
     public float time; // time since the game started
     public Vector2 position; // part that the user has currently selected
     public bool noteMode;

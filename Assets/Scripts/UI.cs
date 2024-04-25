@@ -329,7 +329,10 @@ public class UI : MonoBehaviour
         if (data != null){
             main.grid = Data.dataToGrid(data);
         } else {
+            // new game
             main.grid = Data.GetSudokuGrid(main.difficulties[difficulty]);
+            main.grid.difficulty = difficulty;
+            stats[difficulty].gamesPlayed += 1;
         }
         
         main.grid.DrawAll(sudoku.gameObject, sudoku.textReference);
@@ -356,6 +359,11 @@ public class UI : MonoBehaviour
         }
 
         if (completedGameContainer.activeSelf){ // player completed the puzzle
+            Stat stat = stats[main.grid.difficulty];
+            stat.gamesWon += 1;
+            stat.winRate = stat.gamesPlayed / stat.gamesWon;
+            
+            SaveData.Save(main.grid, userPref, stats);
             SaveData.WipeGridData();
             completedGameContainer.GetComponent<Modal>().Close(0.1f);
             continueButton.GetComponent<Button>().interactable = false; // no saved game
