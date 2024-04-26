@@ -55,14 +55,13 @@ public class UI : MonoBehaviour
 
     [Header("Theme")]
     public List<Theme> themes;
+    public Theme currentTheme;
     public GameObject toggleThemeButton; // button in the top right corner that lets you swap themes
     private void Awake() {
         currentScene = homeScene;
 
         stats = SaveData.LoadStats().ToList();
         userPref = SaveData.LoadPrefs() == null ? SaveData.LoadPrefs() : new UserPref();
-
-        Debug.Log(stats[0].gamesPlayed);
 
         // set themes
         themes.Add(new("#ffffff", "#E0F2FE", "#ffffff", "#4c7c9c")); // light mode
@@ -178,6 +177,7 @@ public class UI : MonoBehaviour
                     // create a copy of the stats for transitoning
                     GameObject original = statsListParent.parent.gameObject;
                     GameObject copy = Instantiate(original);
+                    Destroy(copy.GetComponent<Stats>());
 
                     copy.transform.parent = original.transform.parent;
                     copy.GetComponent<RectTransform>().position = original.GetComponent<RectTransform>().position;
@@ -202,6 +202,7 @@ public class UI : MonoBehaviour
 
     public void ApplyTheme(bool full = false){ // set full to true during a new scene, uses more memory
         Theme theme = themes[userPref.themeIndex];
+        currentTheme = theme;
         Camera.main.backgroundColor = theme.background.ToRGB();
 
         header.GetComponent<Image>().color = theme.background.ToRGB();
@@ -209,7 +210,7 @@ public class UI : MonoBehaviour
         // update text and button color
         foreach (var element in FindObjectsByType<TMP_Text>(FindObjectsInactive.Include, FindObjectsSortMode.None)){
             Transform parent = element.transform.parent;
-            if (element.color != theme.text2.ToRGB())
+            if (element.color != theme.text2.ToRGB() || element.tag != "Ignore")
                 element.color = Data.Grayscale(Data.Invert(theme.background.ToRGB()));
             
             if (parent.gameObject.HasComponent<Button>() && full){
