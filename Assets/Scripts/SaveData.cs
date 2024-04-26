@@ -39,7 +39,7 @@ public static class SaveData {
     // save data to persistent data path
     public static void Save(SudokuGrid grid, UserPref userPref, Stat[] stats){
 
-        SudokuData data = new SudokuData(grid.partial, grid.full, grid.data, grid.noteData)
+        SudokuData data = new SudokuData(grid.partial, grid.full, grid.data, grid.noteData, grid.difficulty)
         {
             mistakesLeft = grid.mistakesLeft,
             time = grid.time

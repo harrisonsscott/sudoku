@@ -53,6 +53,7 @@ public class SudokuData {
     public string data;
     public int mistakesLeft;
     public float time; // in seconds
+    public int difficulty;
 
     public SudokuData(){}
 
@@ -61,12 +62,13 @@ public class SudokuData {
         this.full = full;
     }
 
-    public SudokuData(string partial, string full, int[,] data, bool[,,] noteData){
+    public SudokuData(string partial, string full, int[,] data, bool[,,] noteData, int difficulty){
         this.partial = partial;
         this.full = full;
         this.dataArray = data;
         this.data = Data.SerializeArray(data);
         this.notes = Data.SerializeNotes(noteData);
+        this.difficulty = difficulty;
     }
 }
 
@@ -325,7 +327,8 @@ public static class Data {
             data = DecodeSudokuString(data.data),
             noteData = DecodeNoteString(data.notes),
             mistakesLeft = data.mistakesLeft,
-            time = data.time
+            time = data.time,
+            difficulty = data.difficulty
         };
 
         return grid;

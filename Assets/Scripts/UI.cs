@@ -5,9 +5,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
-using UnityEngine.Jobs;
-using UnityEditorInternal;
-using Unity.VisualScripting;
 using System.Linq;
 
 // handles all the UI functions
@@ -187,7 +184,9 @@ public class UI : MonoBehaviour
                     original.GetComponent<RectTransform>().position += new Vector3(original.GetComponent<RectTransform>().sizeDelta.x, 0, 0);
 
                     LeanTween.moveLocal(copy, new Vector3(-original.GetComponent<RectTransform>().sizeDelta.x, original.GetComponent<RectTransform>().localPosition.y, 0), transitionTime);
-                    LeanTween.moveLocal(original, new Vector3(0,original.GetComponent<RectTransform>().localPosition.y,0), transitionTime);
+                    LeanTween.moveLocal(original, new Vector3(0,original.GetComponent<RectTransform>().localPosition.y,0), transitionTime).setOnComplete(() => {
+                        Destroy(copy);
+                    });
                 }
                 
             });
@@ -361,7 +360,8 @@ public class UI : MonoBehaviour
         if (completedGameContainer.activeSelf){ // player completed the puzzle
             Stat stat = stats[main.grid.difficulty];
             stat.gamesWon += 1;
-            stat.winRate = stat.gamesPlayed / stat.gamesWon;
+            stat.Refresh();
+            // stat.winRate = stat.gamesWon / (float)stat.gamesPlayed * 100f + "%";
             
             SaveData.Save(main.grid, userPref, stats);
             SaveData.WipeGridData();

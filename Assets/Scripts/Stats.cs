@@ -7,19 +7,22 @@ using UnityEngine;
 public class Stat { // stats for one single difficulty
     public int gamesPlayed;
     public int gamesWon;
-    public float winRate; // ratio of games played to games won
-
+    public string winRate; // ratio of games played to games won as a percentage
 
     public Stat(){
         gamesPlayed = 0;
         gamesWon = 0;
-        winRate = 0;
+        winRate = "0%";
     }
 
     public Stat(int gamesPlayed, int gamesWon){
         this.gamesPlayed = gamesPlayed;
         this.gamesWon = gamesWon;
-        this.winRate = gamesWon / gamesWon;
+        Refresh();
+    }
+
+    public void Refresh(){ // refreshes variables
+        this.winRate = gamesWon / (float)gamesPlayed * 100f + "%";
     }
 }
 
