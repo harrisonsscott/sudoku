@@ -12,7 +12,7 @@ public class Stat { // stats for one single difficulty
     public Stat(){
         gamesPlayed = 0;
         gamesWon = 0;
-        winRate = "0%";
+        Refresh();
     }
 
     public Stat(int gamesPlayed, int gamesWon){
@@ -22,7 +22,8 @@ public class Stat { // stats for one single difficulty
     }
 
     public void Refresh(){ // refreshes variables
-        this.winRate = gamesWon / (float)gamesPlayed * 100f + "%";
+        // display the win rate percentage up to 1 decimal place
+        this.winRate = this.gamesPlayed == 0 ? "-" : Mathf.Floor(gamesWon / (float)gamesPlayed * 1000f) / 10f + "%";
     }
 }
 
@@ -51,7 +52,6 @@ public class Stats : MonoBehaviour
             textList.Add(transform.GetChild(i).Find("Amount").GetComponent<TMP_Text>());
         }
 
-        Debug.Log(transform.name);
         Transform headerDifficultyParent = transform.parent.parent.GetChild(1).GetChild(1).GetChild(0);
         for (int i = 0; i < headerDifficultyParent.childCount; i++){
             headerDifficulty.Add(headerDifficultyParent.GetChild(i).gameObject);
@@ -68,7 +68,9 @@ public class Stats : MonoBehaviour
         
         index = 0;
         foreach (var property in typeof(Stat).GetFields()){
-            textList[index].text = property.GetValue(stats[currentDifficultyIndex]) + "";
+            object prop = property.GetValue(stats[currentDifficultyIndex]);
+
+            textList[index].text = prop != null ? prop + "" : "-";
             index += 1;
         }
 
@@ -76,7 +78,13 @@ public class Stats : MonoBehaviour
             text.color = ui.currentTheme.text.ToRGB();
         }
 
+        foreach(Stat stat in stats){
+            stat.Refresh();
+        }
+
         difficultyList[currentDifficultyIndex].color = theme.text2.ToRGB();
+
+        SaveData.SaveStats(stats);
     }
 
     private void Update() {

@@ -58,6 +58,11 @@ public class UI : MonoBehaviour
     public Theme currentTheme;
     public GameObject toggleThemeButton; // button in the top right corner that lets you swap themes
     private void Awake() {
+
+        if (SaveData.LoadStats() == null) {
+            SaveData.SaveStats(new Stat[5]);
+        }
+
         currentScene = homeScene;
 
         stats = SaveData.LoadStats().ToList();
@@ -326,6 +331,9 @@ public class UI : MonoBehaviour
         navigator.transform.parent.gameObject.SetActive(false);
 
         OnMistake(true); // refresh the hearts
+
+        Debug.Log(data);
+
         if (data != null){
             main.grid = Data.dataToGrid(data);
         } else {

@@ -56,23 +56,33 @@ public static class SaveData {
         Save(grid, userPref, stats.ToArray());
     }
 
+    public static void Save(UserData data){
+        Save(Data.dataToGrid(data.gridData), data.userPref, data.stats);
+    }
+
     public static SudokuData LoadGrid(){
-        if (File.Exists(GlobalConstants.dataPath)){
-            string json = File.ReadAllText(GlobalConstants.dataPath);
-            UserData data = JsonUtility.FromJson<UserData>(json);
-            return data.gridData;
-        } else {
-            Debug.Log("error fetching data!");
-            Save(new SudokuGrid(), new UserPref(), new Stat[5]);
-            return null;
-        }
+        UserData data = Load();
+
+        return data == null ? new SudokuData() : data.gridData;
     }
 
     public static UserPref LoadPrefs(){
+        UserData data = Load();
+
+        return data == null ? new UserPref() : data.userPref;
+    }
+
+    public static Stat[] LoadStats(){
+        UserData data = Load();
+
+        return data == null ? new Stat[5] : data.stats;
+    }
+
+    public static UserData Load(){
         if (File.Exists(GlobalConstants.dataPath)){
             string json = File.ReadAllText(GlobalConstants.dataPath);
             UserData data = JsonUtility.FromJson<UserData>(json);
-            return data.userPref;
+            return data;
         } else {
             Save(new SudokuGrid(), new UserPref(), new Stat[5]);
             Debug.Log("error fetching data!");
@@ -80,16 +90,12 @@ public static class SaveData {
         }
     }
 
-    public static Stat[] LoadStats(){
-        if (File.Exists(GlobalConstants.dataPath)){
-            string json = File.ReadAllText(GlobalConstants.dataPath);
-            UserData data = JsonUtility.FromJson<UserData>(json);
-            return data.stats;
-        } else {
-            Save(new SudokuGrid(), new UserPref(), new Stat[5]);
-            Debug.Log("error fetching data!");
-            return null;
-        }
+    public static void SaveStats(Stat[] stats){
+        UserData data = Load();
+
+        data.stats = stats;
+
+        Save(data);
     }
 
     // clear the sudoku grid data
