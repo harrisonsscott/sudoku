@@ -23,7 +23,8 @@ public class Stat { // stats for one single difficulty
 
     public void Refresh(){ // refreshes variables
         // display the win rate percentage up to 1 decimal place
-        this.winRate = this.gamesPlayed == 0 ? "-" : Mathf.Floor(gamesWon / (float)gamesPlayed * 1000f) / 10f + "%";
+        this.winRate = this.gamesPlayed == 0 ? "-" : 
+            Mathf.Floor(gamesWon / (float)gamesPlayed * 100 * Mathf.Pow(10, GlobalConstants.decimalPlaces)) / Mathf.Pow(10, GlobalConstants.decimalPlaces) + "%";
     }
 }
 
@@ -88,6 +89,6 @@ public class Stats : MonoBehaviour
     }
 
     private void Update() {
-        Refresh();
+        // Refresh();
     }
 }
