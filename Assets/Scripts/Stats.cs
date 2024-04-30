@@ -7,24 +7,33 @@ using UnityEngine;
 public class Stat { // stats for one single difficulty
     public int gamesPlayed;
     public int gamesWon;
-    public string winRate; // ratio of games played to games won as a percentage
+    public string winRate = "0%"; // ratio of games played to games won as a percentage
+    public int highScore;
+    public int totalPoints;
+    public string averageScore = "0%";
 
     public Stat(){
         gamesPlayed = 0;
         gamesWon = 0;
+        totalPoints = 0;
+        highScore = 0;
         Refresh();
     }
 
-    public Stat(int gamesPlayed, int gamesWon){
+    public Stat(int gamesPlayed, int gamesWon, int highScore, int totalPoints){
         this.gamesPlayed = gamesPlayed;
         this.gamesWon = gamesWon;
+        this.highScore = highScore;
+        this.totalPoints = totalPoints;
         Refresh();
     }
 
     public void Refresh(){ // refreshes variables
         // display the win rate percentage up to 1 decimal place
-        this.winRate = this.gamesPlayed == 0 ? "-" : 
-            Mathf.Floor(gamesWon / (float)gamesPlayed * 100 * Mathf.Pow(10, GlobalConstants.decimalPlaces)) / Mathf.Pow(10, GlobalConstants.decimalPlaces) + "%";
+        winRate = gamesPlayed == 0 ? "-" : 
+            Mathf.Floor(gamesWon / (float)gamesPlayed * 100 * Mathf.Pow(10, GlobalConstants.precision)) / Mathf.Pow(10, GlobalConstants.precision) + "%";
+        averageScore = gamesPlayed == 0 ? "-" : (totalPoints / gamesPlayed) + "%";
+            
     }
 }
 

@@ -98,6 +98,10 @@ public static class SaveData {
         Save(data);
     }
 
+    public static void SaveStats(List<Stat> stats){
+        SaveStats(stats.ToArray());
+    }
+
     // clear the sudoku grid data
     public static void WipeGridData(){
         Debug.Log("wiped data");

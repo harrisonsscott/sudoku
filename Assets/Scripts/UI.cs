@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
 using System.Linq;
+using Unity.Mathematics;
 
 // handles all the UI functions
 public class UI : MonoBehaviour
@@ -373,6 +374,12 @@ public class UI : MonoBehaviour
         isInGame = false;
         ads2.LoadAd();
         if (endGameContainer.activeSelf){ // player made too many mistakes
+            Stat stat = stats[main.grid.difficulty];
+            stat.highScore = math.max(main.grid.score, stat.highScore);
+            stat.totalPoints += main.grid.score;
+            stat.Refresh();
+
+            SaveData.SaveStats(stats);
             SaveData.WipeGridData();
             endGameContainer.GetComponent<Modal>().Close(0.1f);
             continueButton.GetComponent<Button>().interactable = false; // no saved game
@@ -382,6 +389,8 @@ public class UI : MonoBehaviour
         if (completedGameContainer.activeSelf){ // player completed the puzzle
             Stat stat = stats[main.grid.difficulty];
             stat.gamesWon += 1;
+            stat.highScore = math.max(main.grid.score, stat.highScore);
+            stat.totalPoints += main.grid.score;
             stat.Refresh();
             // stat.winRate = stat.gamesWon / (float)stat.gamesPlayed * 100f + "%";
             
