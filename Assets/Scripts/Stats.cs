@@ -38,6 +38,7 @@ public class Stats : MonoBehaviour
     [HideInInspector] public List<GameObject> headerDifficulty; // text in the header that show what difficulty you're looking at
     [HideInInspector] public List<TMP_Text> difficultyList; // text for each fo the objects in headerDifficulty
     public int currentDifficultyIndex;
+    public Transform header;
 
     private int index;
     private UI ui;
@@ -49,11 +50,13 @@ public class Stats : MonoBehaviour
 
         currentDifficultyIndex = 0;
         for (int i = 0; i < transform.childCount; i++){
-            panels.Add(transform.GetChild(i).gameObject);
-            textList.Add(transform.GetChild(i).Find("Amount").GetComponent<TMP_Text>());
+            if (transform.GetChild(i).Find("Amount")){
+                panels.Add(transform.GetChild(i).gameObject);
+                textList.Add(transform.GetChild(i).Find("Amount").GetComponent<TMP_Text>());
+            }
         }
 
-        Transform headerDifficultyParent = transform.parent.parent.GetChild(1).GetChild(1).GetChild(0);
+        Transform headerDifficultyParent = header.GetChild(1).GetChild(1).GetChild(0);
         for (int i = 0; i < headerDifficultyParent.childCount; i++){
             headerDifficulty.Add(headerDifficultyParent.GetChild(i).gameObject);
             difficultyList.Add(headerDifficultyParent.GetChild(i).GetChild(0).GetComponent<TMP_Text>());

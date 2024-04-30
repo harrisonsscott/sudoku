@@ -166,9 +166,11 @@ public class UI : MonoBehaviour
         // stats menu
         statsList = new List<GameObject>();
         Stats statsClass = FindAnyObjectByType<Stats>(FindObjectsInactive.Include);
-        Transform statsListParent = statsScene.transform.Find("Header").Find("Scroll").GetChild(0);
+        Transform statsListParent = statsClass.transform;
         for (int i = 0; i < statsListParent.childCount; i++){
-            statsList.Add(statsListParent.GetChild(i).gameObject);
+            if (statsListParent.GetChild(i).Find("Amount")){
+                statsList.Add(statsListParent.GetChild(i).gameObject);
+            }
         }
 
         for (int i = 0; i < statButtonsParent.childCount; i++){
@@ -176,22 +178,30 @@ public class UI : MonoBehaviour
             statButtons.Add(statButtonsParent.GetChild(i).gameObject);
             statButtonsParent.GetChild(i).GetComponent<Button>().onClick.AddListener(() => {
                 if (index2 != statDifficultyIndex){
-                    statDifficultyIndex = index2;
-                    statsClass.currentDifficultyIndex = index2;
-                    statsClass.Refresh();
                     // create a copy of the stats for transitoning
                     GameObject original = statsListParent.parent.gameObject;
-                    GameObject copy = Instantiate(original);
+                    GameObject copy = Instantiate(original, original.transform.parent);
+
+                    RectTransform copyRect = copy.GetComponent<RectTransform>();
+                    RectTransform originalRect = original.GetComponent<RectTransform>();
                     Destroy(copy.GetComponent<Stats>());
 
-                    copy.transform.parent = original.transform.parent;
                     copy.GetComponent<RectTransform>().position = original.GetComponent<RectTransform>().position;
-                    original.GetComponent<RectTransform>().position += new Vector3(original.GetComponent<RectTransform>().sizeDelta.x, 0, 0);
+                    original.GetComponent<RectTransform>().position += new Vector3(FindObjectOfType<Canvas>().GetComponent<CanvasScaler>().referenceResolution.x, 0, 0);
 
-                    LeanTween.moveLocal(copy, new Vector3(-original.GetComponent<RectTransform>().sizeDelta.x, original.GetComponent<RectTransform>().localPosition.y, 0), transitionTime);
-                    LeanTween.moveLocal(original, new Vector3(0,original.GetComponent<RectTransform>().localPosition.y,0), transitionTime).setOnComplete(() => {
-                        Destroy(copy);
-                    });
+                    LeanTween.moveLocal(copy, new Vector3(
+                        -FindObjectOfType<Canvas>().GetComponent<CanvasScaler>().referenceResolution.x, 
+                        originalRect.localPosition.y, 0), 
+                        transitionTime/2f);
+                    LeanTween.moveLocal(original, new Vector3(0, originalRect.localPosition.y, 0), transitionTime/2f);
+
+                    // LeanTween.moveLocal(copy, new Vector3(-original.GetComponent<RectTransform>().sizeDelta.x, original.GetComponent<RectTransform>().localPosition.y, 0), transitionTime/2f);
+                    // LeanTween.moveLocal(original, new Vector3(0,original.GetComponent<RectTransform>().localPosition.y,0), transitionTime/2f).setOnComplete(() => {
+                    //     statDifficultyIndex = index2;
+                    //     statsClass.currentDifficultyIndex = index2;
+                    //     statsClass.Refresh();
+                    //     Destroy(copy);
+                    // });
                 }
                 
             });
@@ -206,6 +216,7 @@ public class UI : MonoBehaviour
     }
 
     public void ApplyTheme(bool full = false){ // set full to true during a new scene, uses more memory
+        // if you want something to ignore the theming, set the layer to Ignore
         Theme theme = themes[userPref.themeIndex];
         currentTheme = theme;
         Camera.main.backgroundColor = theme.background.ToRGB();
@@ -214,16 +225,18 @@ public class UI : MonoBehaviour
 
         // update text and button color
         foreach (var element in FindObjectsByType<TMP_Text>(FindObjectsInactive.Include, FindObjectsSortMode.None)){
-            Transform parent = element.transform.parent;
-            if (element.color != theme.text2.ToRGB() || element.tag != "Ignore")
-                element.color = Data.Grayscale(Data.Invert(theme.background.ToRGB()));
-            
-            if (parent.gameObject.HasComponent<Button>() && full){
-                Image image = parent.gameObject.GetComponent<Image>();
-                float trans = image.color.a;
-                image.color = parent.gameObject == sudokuGrid ? theme.sudokuGrid.ToRGB() : theme.button.ToRGB();
-                image.color = new Color(image.color.r, image.color.g, image.color.b, trans); // keep transparency
-            }
+            if (element.tag != "Ignore"){
+                Transform parent = element.transform.parent;
+                if (element.color != theme.text2.ToRGB())
+                    element.color = Data.Grayscale(Data.Invert(theme.background.ToRGB()));
+                
+                if (parent.gameObject.HasComponent<Button>() && full){
+                    Image image = parent.gameObject.GetComponent<Image>();
+                    float trans = image.color.a; // keep transparency
+                    image.color = parent.gameObject == sudokuGrid ? theme.sudokuGrid.ToRGB() : theme.button.ToRGB();
+                    image.color = new Color(image.color.r, image.color.g, image.color.b, trans);
+                }
+            } 
         }
 
         if (full){
