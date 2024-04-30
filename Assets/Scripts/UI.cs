@@ -194,7 +194,12 @@ public class UI : MonoBehaviour
                         -FindObjectOfType<Canvas>().GetComponent<CanvasScaler>().referenceResolution.x, 
                         originalRect.localPosition.y, 0), 
                         transitionTime/2f);
-                    LeanTween.moveLocal(original, new Vector3(0, originalRect.localPosition.y, 0), transitionTime/2f);
+                    LeanTween.moveLocal(original, new Vector3(0, originalRect.localPosition.y, 0), transitionTime/2f).setOnComplete(() => {
+                        statDifficultyIndex = index2;
+                        statsClass.currentDifficultyIndex = index2;
+                        statsClass.Refresh();
+                        Destroy(copy);
+                    });
 
                     // LeanTween.moveLocal(copy, new Vector3(-original.GetComponent<RectTransform>().sizeDelta.x, original.GetComponent<RectTransform>().localPosition.y, 0), transitionTime/2f);
                     // LeanTween.moveLocal(original, new Vector3(0,original.GetComponent<RectTransform>().localPosition.y,0), transitionTime/2f).setOnComplete(() => {

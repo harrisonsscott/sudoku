@@ -32,7 +32,7 @@ public class Stat { // stats for one single difficulty
         // display the win rate percentage up to 1 decimal place
         winRate = gamesPlayed == 0 ? "-" : 
             Mathf.Floor(gamesWon / (float)gamesPlayed * 100 * Mathf.Pow(10, GlobalConstants.precision)) / Mathf.Pow(10, GlobalConstants.precision) + "%";
-        averageScore = gamesPlayed == 0 ? "-" : (totalPoints / gamesPlayed) + "%";
+        averageScore = gamesPlayed == 0 ? "-" : (totalPoints / gamesPlayed) + "";
             
     }
 }
